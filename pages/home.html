@@ -1,0 +1,298 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     pages/home.html
+     Overview / landing page fragment.
+     Injected into #app by router.js &mdash; do NOT include <html>, <head>, <body>.
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- ── Hero ───────────────────────────────────────────────────── -->
+<header class="hero">
+
+  <div class="hero__eyebrow">
+    <span class="hero__eyebrow-line"></span>
+    Final Degree Project &middot; Universitat Pompeu Fabra &middot; 2026
+    <span class="hero__eyebrow-line"></span>
+  </div>
+
+  <h1 class="hero__title">
+    Contrastive Self-Supervised <br> Learning for
+    <em>Astronomical <br> Phenomena</em> Identification
+  </h1>
+
+  <p class="hero__subtitle">From Dataset Construction to Representation Learning,<br>
+    Classification, and Subclass Clustering</p>
+
+  <!-- <p class="hero__tagline">
+    From Dataset Construction to Representation Learning,<br>
+    Classification, and Subclass Clustering
+  </p> -->
+
+  <div class="hero__actions">
+    <a href="assets/report.pdf" class="btn btn--primary" download>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download Report
+    </a>
+    <a class="btn btn--secondary" data-page="demo">
+      Try the Demo
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="hero__scroll">
+    <span>Scroll to explore</span>
+    <div class="hero__scroll-line"></div>
+  </div>
+
+</header>
+
+
+<!-- ── Content ────────────────────────────────────────────────── -->
+<div class="content-wrapper">
+
+  <!-- 01 &middot; Background -->
+  <section class="section">
+    <div class="section-label">01 &middot; Background</div>
+
+    <div class="two-col">
+      <div class="col-text">
+        <h2>Meteoroids, Meteorites, <em>&amp; Meteors</em></h2>
+        <p>
+          Meteoritics is the science that studies meteors, meteorites, and meteoroids,
+          with the goal of recovering and analysing rocks from space that penetrate the
+          Earth's atmosphere &mdash; providing key insights into the origin and evolution of
+          the Solar System and the history of the inner planets.
+        </p>
+        <p>
+          Three related terms define the scope of this project:
+          <strong>meteoroids</strong> are rocks in space ranging from dust grains to
+          small asteroids; <strong>meteors</strong> are the visible trail of light
+          produced when a meteoroid enters the atmosphere at high speed and burns &mdash;
+          also known as a <em>fireball</em> or <em>shooting star</em>; and
+          <strong>meteorites</strong> are fragments that survive atmospheric entry and
+          reach the ground.
+        </p>
+        <p>
+          Multiple organisations monitor bright meteors continuously, including the
+          NASA All-Sky Fireball Network, the Desert Fireball Network, FRIPON, and the
+          <strong>Spanish Fireball and Meteorite Recovery Network (SPMN)</strong> &mdash; a
+          multidisciplinary professional-amateur collaboration with 60 stations across
+          Spain, recording thousands of fireballs per year.
+        </p>
+        <p>
+          The recorded material, however, does not consist solely of meteors. Planes,
+          birds, artificial lights, and meteorological events are also detected &mdash;
+          often far more frequently than actual meteors. This project focuses on the
+          detection and classification of meteor events from video data collected at
+          the SPMN station located in <strong>Folgueroles, Barcelona</strong>.
+        </p>
+      </div>
+
+      <aside class="col-aside">
+
+        <!-- At-a-glance info card -->
+        <div class="info-card">
+          <div class="info-card__header">Project at a glance</div>
+          <div class="info-card__body">
+            <ul class="info-list">
+              <li>
+                <span class="info-list__label">Domain</span>
+                <span class="info-list__value">Computer Vision & Deep Learning</span>
+              </li>
+              <li>
+                <span class="info-list__label">Method</span>
+                <span class="info-list__value">Contrastive SSL</span>
+              </li>
+              <li>
+                <span class="info-list__label">Tasks</span>
+                <span class="info-list__value">Classification + Clustering</span>
+              </li>
+              <li>
+                <span class="info-list__label">Data source</span>
+                <span class="info-list__value">SPMN &middot; Folgueroles</span>
+              </li>
+              <li>
+                <span class="info-list__label">Author</span>
+                <span class="info-list__value">AURORA Pujols Rial</span>
+              </li>
+              <li>
+                <span class="info-list__label">Supervisor</span>
+                <span class="info-list__value">COLOMA Ballester</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Report download card -->
+        <div class="report-card">
+          <div class="report-card__icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <div class="report-card__text">
+            <strong>Full Report</strong>
+            <span>PDF &middot; ~XX pages</span>
+          </div>
+          <a href="assets/report.pdf" class="btn btn--primary btn--small" download>PDF</a>
+        </div>
+
+      </aside>
+    </div>
+  </section>
+
+
+  <!-- 02 &middot; Problem Statement -->
+  <section class="section">
+    <div class="section-label">02 &middot; Problem Statement</div>
+    <h2>A Classification Problem <em>Without Labels</em></h2>
+    <p>
+      The core challenge this project addresses is the absence of an automated pipeline
+      for classifying meteor events at the SPMN station. Because non-meteor events were
+      historically discarded rather than saved, no labelled dataset for the non-meteor
+      class existed prior to this work &mdash; making it impossible to train a supervised
+      classifier directly.
+    </p>
+    <p>
+      Even once negative samples are collected, the non-meteor class contains a
+      heterogeneous mixture of phenomena &mdash; planes, birds, insects, artificial lights,
+      atmospheric events &mdash; none of which carry subclass labels. This gives rise to
+      two coupled challenges:
+    </p>
+
+    <div class="pipeline">
+
+      <div class="pipeline__step">
+        <div class="pipeline__number">I</div>
+        <div>
+          <h3>Binary Classification</h3>
+          <p>A <em>meteor vs. non-meteor</em> classifier must be learned from a newly
+             constructed dataset, using a method that does not rely on class labels
+             during representation learning.</p>
+        </div>
+      </div>
+
+      <div class="pipeline__arrow">→</div>
+
+      <div class="pipeline__step">
+        <div class="pipeline__number">II</div>
+        <div>
+          <h3>Subclass Discovery</h3>
+          <p>An unsupervised approach is needed to explore the internal structure of the
+             non-meteor class and assess whether distinct subclasses &mdash; planes, birds,
+             lightning &mdash; can be recovered without manual annotation.</p>
+        </div>
+      </div>
+
+      <div class="pipeline__arrow">→</div>
+
+      <div class="pipeline__step">
+        <div class="pipeline__number">III</div>
+        <div>
+          <h3>Self-Supervised Learning</h3>
+          <p>Contrastive SSL is a natural fit for both challenges: it learns rich visual
+             representations from unlabelled data, and the embeddings can be used for
+             both downstream classification and clustering.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 03 &middot; Objectives -->
+  <section class="section">
+    <div class="section-label">03 &middot; Objectives</div>
+    <h2>What This Project Aims to Achieve</h2>
+
+    <div class="two-col">
+      <div class="col-text">
+
+        <h3>Primary Objective</h3>
+        <p>
+          Develop a classification pipeline that reliably distinguishes between meteor
+          and non-meteor events. By learning a representation that generalizes across
+          the visual characteristics of the station's recordings, the goal is to achieve
+          high binary classification accuracy using a simple linear probe on top of the
+          learned embeddings.
+        </p>
+        <p>
+          Because non-meteor data were normally discarded prior to this project, all
+          detections were saved and labelled into the two main classes for the duration
+          of the data collection period &mdash; an effort that is itself a contribution of
+          this work.
+        </p>
+
+        <h3 style="margin-top:1.5rem;">Secondary Objective</h3>
+        <p>
+          Classify non-meteor events into specific categories such as planes, birds,
+          insects, lightning, and other sources of false detections. These data carry
+          scientific value in their own right &mdash; for example, recordings of bird
+          migration and flight patterns.
+        </p>
+        <p>
+          The dataset contains no subclass labels for non-meteor phenomena, and its
+          size makes manual annotation impractical. This task is therefore approached
+          using <strong>unsupervised clustering</strong> applied to the learned
+          embeddings.
+        </p>
+
+      </div>
+
+      <aside class="col-aside">
+        <div class="info-card">
+          <div class="info-card__header">Overarching aim</div>
+          <div class="info-card__body" style="padding:1rem 1.25rem;">
+            <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.8;">
+              Automate and accelerate the manual classification currently performed
+              at the Folgueroles SPMN station using deep learning &mdash; reducing a
+              nightly, time-consuming screening process to a fully automated pipeline.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+
+  <!-- 04 &middot; Key Results -->
+  <section class="section">
+    <div class="section-label">04 &middot; Key Results</div>
+    <h2>Findings</h2>
+
+    <div class="results-grid">
+      <!--
+        ✏ Replace the "&mdash;" values with your actual numbers once experiments are done.
+      -->
+      <div class="result-card">
+        <div class="result-card__value">95%</div>
+        <div class="result-card__label">Binary Classification Accuracy</div>
+      </div>
+      <div class="result-card">
+        <div class="result-card__value">14</div>
+        <div class="result-card__label">Non-meteor Subclasses Found</div>
+      </div>
+      <div class="result-card">
+        <div class="result-card__value">51,700</div>
+        <div class="result-card__label">Dataset Samples</div>
+      </div>
+      <div class="result-card">
+        <div class="result-card__value">512</div>
+        <div class="result-card__label">Embedding Dimensions</div>
+      </div>
+    </div>
+
+    <p class="results-note">Specific results explained in the full report.</p>
+  </section>
+
+</div><!-- /content-wrapper -->

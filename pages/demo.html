@@ -1,0 +1,220 @@
+<!-- pages/demo.html -->
+
+<div class="content-wrapper content-wrapper--page">
+
+  <!-- Page hero -->
+  <div class="page-hero">
+    <div class="section-label">Interactive Demo</div>
+    <h1>Explore the Models</h1>
+    <p class="page-intro">
+      Upload meteor recording pairs (.avi + .xml) or a .zip archive to run the
+      classifier. Results are shown as a grid of cropped sum images, each with
+      its predicted class and confidence score.
+    </p>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="demo-tabs">
+    <button class="demo-tab active" data-tab="predict">Prediction</button>
+    <button class="demo-tab"        data-tab="cluster">Cluster Explorer</button>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PREDICTION TAB
+  ════════════════════════════════════════════════════════════ -->
+  <div class="demo-panel active" id="tab-predict">
+    <section class="section">
+      <div class="section-label">Classification Model</div>
+      <h2>Meteor vs. Non-meteor</h2>
+      <p>
+        Upload one or more recording pairs (.avi + matching .xml), or bundle them
+        all into a single .zip file. The server will generate the cropped sum image
+        for each pair and run the trained classifier.
+      </p>
+
+      <!-- How-to instruction strip -->
+      <div class="upload-instructions">
+        <div class="upload-step">
+          <span class="upload-step__num">1</span>
+          <span>Pair each .avi with its .xml &mdash; filenames must match</span>
+        </div>
+        <div class="upload-step__arrow">&rarr;</div>
+        <div class="upload-step">
+          <span class="upload-step__num">2</span>
+          <span>Drop pairs here, or zip them and upload the archive</span>
+        </div>
+        <div class="upload-step__arrow">&rarr;</div>
+        <div class="upload-step">
+          <span class="upload-step__num">3</span>
+          <span>View cropped images with predictions, then download results</span>
+        </div>
+      </div>
+
+      <!-- Upload zone -->
+      <div class="upload-zone" id="upload-zone">
+        <div class="upload-zone__icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <p class="upload-zone__primary">Drop files or a .zip here</p>
+        <p class="upload-zone__secondary">
+          or <label for="file-input" class="upload-zone__browse">browse to upload</label>
+        </p>
+        <p class="upload-zone__hint">
+          .avi + .xml pairs &nbsp;&middot;&nbsp; .zip archive &nbsp;&middot;&nbsp; Max 200 MB
+        </p>
+        <input type="file" id="file-input"
+               accept=".avi,.xml,.zip" multiple hidden>
+      </div>
+
+      <!-- Loading state (hidden by default) -->
+      <div class="results-loading" id="results-loading" style="display:none;">
+        <div class="results-loading__spinner"></div>
+        <p>Processing recordings&hellip;</p>
+      </div>
+
+      <!-- Error state (hidden by default) -->
+      <div class="results-error notice" id="results-error" style="display:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8"  x2="12"   y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="error-message">An error occurred.</span>
+      </div>
+
+      <!-- Results section (hidden until predictions arrive) -->
+      <div id="results-grid-section" style="display:none;">
+
+        <!-- Summary bar + download buttons -->
+        <div class="results-toolbar">
+          <div id="results-summary" class="results-summary"></div>
+          <div class="results-toolbar__actions">
+            <button class="btn btn--secondary" id="btn-download-csv">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download CSV
+            </button>
+            <button class="btn btn--secondary" id="btn-download-images">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              Download Images
+            </button>
+          </div>
+        </div>
+
+        <!-- Results grid — cards injected here by demo.js -->
+        <div class="results-grid" id="results-grid"></div>
+
+      </div>
+
+      <!-- Backend notice — remove once model is connected -->
+      <div class="notice" id="backend-notice">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8"  x2="12"    y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Backend not yet connected. Start the server locally with
+        <code>uvicorn app:app --port 8000</code> inside <code>backend/</code>,
+        or deploy to Railway and update <code>API_URL</code> in
+        <code>assets/js/demo.js</code>.
+      </div>
+
+    </section>
+  </div><!-- /tab-predict -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CLUSTER EXPLORER TAB
+  ════════════════════════════════════════════════════════════ -->
+  <div class="demo-panel" id="tab-cluster">
+    <section class="section">
+      <div class="section-label">Cluster Visualisation</div>
+      <h2>Embedding Space Explorer</h2>
+      <p>
+        A 2-D UMAP projection of the encoder&rsquo;s learned embedding space,
+        coloured by discovered cluster or known class label. Hover over a point
+        to inspect the individual recording.
+      </p>
+
+      <!-- Legend — update once real class names are known -->
+      <div class="cluster-legend">
+        <div class="cluster-legend__title">Cluster / Class Legend</div>
+        <div class="cluster-legend__items">
+          <div class="legend-item">
+            <span class="legend-item__dot" style="background:#c9a84c"></span>
+            Meteor
+          </div>
+          <div class="legend-item">
+            <span class="legend-item__dot" style="background:#7aaed4"></span>
+            Plane
+          </div>
+          <div class="legend-item">
+            <span class="legend-item__dot" style="background:#d47a7a"></span>
+            Bird
+          </div>
+          <div class="legend-item">
+            <span class="legend-item__dot" style="background:#84c97a"></span>
+            Insect
+          </div>
+          <div class="legend-item">
+            <span class="legend-item__dot" style="background:#c97acd"></span>
+            Other
+          </div>
+        </div>
+      </div>
+
+      <!-- Visualisation container -->
+      <div class="viz-area viz-area--empty">
+        <div class="viz-placeholder">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1"     y1="12"    x2="3"     y2="12"/>
+            <line x1="21"    y1="12"    x2="23"    y2="12"/>
+            <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+            <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+          </svg>
+          <p>Interactive cluster plot</p>
+          <span>
+            Add <code>assets/data/embeddings.json</code> and uncomment
+            the Plotly block in <code>assets/js/demo.js</code> to activate.
+          </span>
+        </div>
+        <div id="cluster-plot"></div>
+      </div>
+
+      <div class="notice">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8"  x2="12"    y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Embedding data not yet loaded. See the CLUSTER INTEGRATION POINT
+        in <code>assets/js/demo.js</code> for instructions.
+      </div>
+
+    </section>
+  </div><!-- /tab-cluster -->
+
+</div><!-- /content-wrapper -->
