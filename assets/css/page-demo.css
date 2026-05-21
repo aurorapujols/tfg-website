@@ -1,0 +1,543 @@
+/* ═══════════════════════════════════════════════════════════════
+   page-demo.css
+   Styles specific to the Demo page (prediction + cluster tabs).
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Tab bar ─────────────────────────────────────────────────── */
+.demo-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
+}
+
+.demo-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.demo-tab:hover  { color: var(--text-primary); }
+.demo-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.demo-panel         { display: none; }
+.demo-panel.active  { display: block; }
+
+/* ── File upload zone ────────────────────────────────────────── */
+.upload-zone {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  background: var(--bg-card);
+  margin: 1.5rem 0;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+.upload-zone:hover,
+.upload-zone.dragover {
+  border-color: var(--gold-dim);
+  background: var(--gold-glow);
+}
+
+.upload-zone__icon    { color: var(--gold-dim); margin-bottom: 1rem; }
+.upload-zone__primary {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+.upload-zone__secondary {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+.upload-zone__browse  { color: var(--gold); cursor: pointer; text-decoration: underline; }
+.upload-zone__hint {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* ── Prediction result panel ────────────────────────────────── */
+.prediction-result {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.prediction-result__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-card-alt);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.prediction-result__body {
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pred-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.pred-row__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.pred-row__value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--gold-light);
+}
+
+/* Confidence bar */
+.confidence-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.confidence-row__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.confidence-track {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-surface);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--gold-dim), var(--gold));
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.8s var(--ease-out-expo);
+}
+.confidence-pct {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gold);
+  min-width: 3rem;
+  text-align: right;
+}
+
+.prediction-result__note {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card-alt);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ── Cluster visualisation area ─────────────────────────────── */
+/*
+   The actual chart renders inside #cluster-plot.
+   Add Plotly / D3 to assets/js/cluster.js and target this element.
+*/
+.viz-area {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 460px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hatching overlay shown only when no chart is present */
+.viz-area--empty::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 20px,
+    rgba(255, 255, 255, 0.01) 20px,
+    rgba(255, 255, 255, 0.01) 40px
+  );
+  pointer-events: none;
+}
+
+.viz-placeholder {
+  text-align: center;
+  color: var(--text-muted);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.viz-placeholder p {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.viz-placeholder span {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  max-width: 300px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+/* The actual Plotly/D3 target — hidden until cluster.js loads data */
+#cluster-plot {
+  width: 100%;
+  height: 460px;
+  display: none; /* cluster.js sets this to block once data is ready */
+}
+
+/* ── Cluster legend ──────────────────────────────────────────── */
+.cluster-legend {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.cluster-legend__title {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+.cluster-legend__items { display: flex; flex-wrap: wrap; gap: 1rem; }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+.legend-item__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Upload instructions strip ───────────────────────────────── */
+.upload-instructions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.upload-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.upload-step__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--gold-glow);
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  font-size: 0.65rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.upload-step__arrow {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* ── Loading spinner ─────────────────────────────────────────── */
+.results-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 3rem 2rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+.results-loading__spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Results toolbar (summary + download buttons) ────────────── */
+.results-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 2rem 0 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.results-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.summary-stat strong { color: var(--text-primary); }
+.summary-divider     { color: var(--text-muted); }
+.meteor-stat strong  { color: var(--gold-light); }
+.non-stat strong     { color: var(--blue-star); }
+.skip-stat           { color: var(--red-star); }
+
+.results-toolbar__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ── Results grid ────────────────────────────────────────────── */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 3rem;
+}
+
+/* ── Individual result card ──────────────────────────────────── */
+.result-card-item {
+  background: var(--bg-card);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.2s var(--ease-out-expo),
+              border-color 0.2s var(--ease-out-expo);
+}
+
+.result-card-item:hover {
+  transform: translateY(-3px);
+}
+
+.result-card-item--meteor {
+  border-color: rgba(201, 168, 76, 0.25);
+}
+
+.result-card-item--meteor:hover {
+  border-color: var(--gold-dim);
+}
+
+.result-card-item--non-meteor {
+  border-color: rgba(122, 174, 212, 0.2);
+}
+
+.result-card-item--non-meteor:hover {
+  border-color: rgba(122, 174, 212, 0.4);
+}
+
+/* Image area */
+.rci__image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: #000;
+  overflow: hidden;
+}
+
+.rci__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Preserve the astronomical look — no smoothing on tiny pixels */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: brightness(1.1) contrast(1.15);
+}
+
+/* Meteor / Non-meteor badge overlaid on image */
+.rci__badge {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.rci__badge--meteor {
+  background: rgba(201, 168, 76, 0.85);
+  color: #000;
+}
+
+.rci__badge--non {
+  background: rgba(122, 174, 212, 0.85);
+  color: #000;
+}
+
+/* Card body */
+.rci__body {
+  padding: 0.9rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.rci__filename {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+/* Confidence bar row */
+.rci__confidence {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.rci__conf-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 5rem;
+}
+
+.rci__conf-track {
+  flex: 1;
+  height: 3px;
+  background: var(--bg-surface);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rci__conf-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s var(--ease-out-expo);
+}
+
+.rci__conf-pct {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  min-width: 2.5rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Probability breakdown */
+.rci__probs {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15rem 0.75rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.rci__prob-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.rci__prob-val {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .results-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  .upload-instructions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .upload-step__arrow { transform: rotate(90deg); }
+}

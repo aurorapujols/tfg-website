@@ -1,0 +1,38 @@
+/* ═══════════════════════════════════════════════════════════════
+   page-about.css
+   Styles specific to the About / Project & Author page.
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Contact links ───────────────────────────────────────────── */
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+.contact-link:hover { color: var(--gold); }
+.contact-link svg   { color: var(--gold-dim); flex-shrink: 0; }
+
+/* ── Resources grid ─────────────────────────────────────────── */
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 540px) {
+  .resources-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════════════
+   variables.css
+   Design tokens — edit this file to retheme the entire site.
+   All other CSS files reference these variables exclusively.
+═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Backgrounds ─────────────────────────────── */
+  --bg:           #080b12;   /* page background          */
+  --bg-surface:   #0d1220;   /* subtle raised surface    */
+  --bg-card:      #111827;   /* cards, panels            */
+  --bg-card-alt:  #0f1a2e;   /* card headers, code bg    */
+
+  /* ── Borders ─────────────────────────────────── */
+  --border:       rgba(180, 160, 100, 0.15);
+  --border-soft:  rgba(255, 255, 255, 0.06);
+
+  /* ── Brand / Accent ──────────────────────────── */
+  --gold:         #c9a84c;
+  --gold-light:   #e2c97a;
+  --gold-dim:     rgba(201, 168, 76, 0.35);
+  --gold-glow:    rgba(201, 168, 76, 0.10);
+
+  /* ── Semantic star colours (decorative) ─────── */
+  --blue-star:    #7aaed4;
+  --red-star:     #d47a7a;
+
+  /* ── Text ────────────────────────────────────── */
+  --text-primary:   #e8e2d4;
+  --text-secondary: #8a8580;
+  --text-muted:     #4a4740;
+
+  /* ── Layout ──────────────────────────────────── */
+  --nav-h:        64px;
+  --content-max:  1100px;
+  --section-gap:  6rem;
+
+  /* ── Typography ──────────────────────────────── */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'Libre Baskerville', Georgia, serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* ── Motion ──────────────────────────────────── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s var(--ease-out-expo);
+  --transition-med:  0.4s var(--ease-out-expo);
+}

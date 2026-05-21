@@ -1,0 +1,198 @@
+/* ═══════════════════════════════════════════════════════════════
+   components.css
+   Reusable UI building blocks — buttons, cards, code blocks, etc.
+   These appear on more than one page and live here, not in page files.
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn--primary {
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 500;
+}
+.btn--primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201, 168, 76, 0.25);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.btn--secondary:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.btn--small {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.65rem;
+}
+
+/* ── Info card ──────────────────────────────────────────────── */
+.info-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.info-card__header {
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-card-alt);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.info-card__body { padding: 0.5rem 0; }
+
+.info-list { list-style: none; }
+.info-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.55rem 1.25rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.info-list li:last-child { border-bottom: none; }
+
+.info-list__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.info-list__value {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+/* ── Code block ─────────────────────────────────────────────── */
+.code-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.code-block__label {
+  padding: 0.6rem 1.25rem;
+  background: var(--bg-card-alt);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.code-block pre {
+  padding: 1.25rem;
+  overflow-x: auto;
+}
+
+.code-block code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ── Notice / warning banner ────────────────────────────────── */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(201, 168, 76, 0.06);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-top: 1.5rem;
+}
+.notice svg { color: var(--gold); flex-shrink: 0; margin-top: 0.1rem; }
+.notice code {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.68rem;
+}
+
+/* ── Tag / badge ────────────────────────────────────────────── */
+.tag {
+  display: inline-block;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* ── Resource card (About page + shared) ───────────────────── */
+.resource-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem;
+  text-decoration: none;
+  transition: border-color var(--transition-fast),
+              transform var(--transition-fast);
+}
+.resource-card:hover {
+  border-color: var(--gold-dim);
+  transform: translateY(-2px);
+}
+.resource-card__icon { color: var(--gold); flex-shrink: 0; }
+.resource-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.resource-card__text strong {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+.resource-card__text span {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
