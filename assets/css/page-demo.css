@@ -582,3 +582,20 @@
   gap: 1rem;
   flex-wrap: wrap;
 }
+
+/* ── Loading sits above the grid, not replacing it ───────────── */
+.results-loading {
+  background: rgba(8, 11, 18, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem 2rem;
+}
+.results-loading p {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0;
+  transition: all 0.3s;
+}

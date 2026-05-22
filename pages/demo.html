@@ -72,10 +72,10 @@
                accept=".avi,.xml,.zip" multiple hidden>
       </div>
 
-      <!-- Loading state (hidden by default) -->
+      <!-- Loading spinner — sits ABOVE the grid, doesn't hide it -->
       <div class="results-loading" id="results-loading" style="display:none;">
         <div class="results-loading__spinner"></div>
-        <p>Processing recordings&hellip;</p>
+        <p id="loading-message">Connecting to server&hellip;</p>
       </div>
 
       <!-- Error state (hidden by default) -->
@@ -89,7 +89,7 @@
         <span id="error-message">An error occurred.</span>
       </div>
 
-      <!-- Results section (hidden until predictions arrive) -->
+      <!-- Results section -->
       <div id="results-grid-section" style="display:none;">
 
         <!-- Storage warning banner (hidden until near limit) -->
