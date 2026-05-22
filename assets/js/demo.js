@@ -499,7 +499,7 @@ window.initDemo = function () {
     '#7aaac9','#c97a84','#84aac9','#c9847a',
   ];
   const NEW_POINT_COLOUR = '#ff6b6b';
-  const BASE_POINT_SIZE  = 5;
+  const BASE_POINT_SIZE  = 3;
   const NEW_POINT_SIZE   = 12;
 
   let clusterInitialised = false;
@@ -552,9 +552,10 @@ window.initDemo = function () {
       Object.entries(byLabel).sort().forEach(([label, pts]) => {
         const colour = SUBCLASS_COLOURS[label] || '#888888';
         traces.push({
-          type: 'scatter', mode: 'markers', name: label,
+          type: 'scatter3d', mode: 'markers', name: label,
           x:    pts.map(p => p.x),
           y:    pts.map(p => p.y),
+          z:    pts.map(p => p.z),
           text: pts.map(p => {
             const prof = profiles[String(p.cluster)] || {};
             return `<b>${p.filename}</b><br>` +
@@ -581,9 +582,10 @@ window.initDemo = function () {
           const name    = `C${cid}: ${prof.dominant_label || '?'}`;
           const colour  = CLUSTER_PALETTE[parseInt(cid) % CLUSTER_PALETTE.length];
           traces.push({
-            type: 'scatter', mode: 'markers', name,
+            type: 'scatter3d', mode: 'markers', name,
             x:    pts.map(p => p.x),
             y:    pts.map(p => p.y),
+            z:    pts.map(p => p.z),
             text: pts.map(p => {
               const topLabels = Object.entries(prof)
                 .filter(([k]) => !['n_samples','dominant_label'].includes(k))
@@ -629,8 +631,12 @@ window.initDemo = function () {
       paper_bgcolor: 'transparent',
       plot_bgcolor:  'transparent',
       font:   { family: 'JetBrains Mono, monospace', color: '#8a8580', size: 11 },
-      xaxis:  { showgrid: false, zeroline: false, showticklabels: false, title: 't-SNE 1' },
-      yaxis:  { showgrid: false, zeroline: false, showticklabels: false, title: 't-SNE 2' },
+      scene: {                        
+        xaxis: { title: 't-SNE 1', showgrid: false },
+        yaxis: { title: 't-SNE 2', showgrid: false },
+        zaxis: { title: 't-SNE 3', showgrid: false },
+        bgcolor: 'transparent',
+      },
       legend: {
         bgcolor:     'rgba(13,18,32,0.9)',
         bordercolor: 'rgba(180,160,100,0.15)',
