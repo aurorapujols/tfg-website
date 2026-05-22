@@ -12,7 +12,7 @@
      • CSV and image downloads cover ALL stored results
 ═══════════════════════════════════════════════════════════════ */
 
-const API_URL    = 'https://intuitive-strength.up.railway.app';
+const API_URL    = 'https://tfg-website-backend-production.up.railway.app';
 const STORAGE_KEY = 'meteor_predictions_v1';
 const MAX_STORED  = 50;
 const WARN_AT     = 45;
