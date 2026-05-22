@@ -65,7 +65,7 @@
           Final Degree Project · AURORA Pujols Rial · Universitat Pompeu Fabra · 2026
         </p>
         <p class="footer__copy">
-          Built with Claude.ai &nbsp;·&nbsp; Hosted on GitHub Pages
+          Built with Claude.ai &nbsp;·&nbsp; Backend Deployed with Railway &nbsp;·&nbsp; Hosted on GitHub Pages
         </p>
       </div>
     </footer>`;

@@ -269,6 +269,14 @@ window.initDemo = function () {
     } else if (stored.length >= WARN_AT) {
       showStorageWarning(stored.length);
     }
+
+    maybeRefreshCluster();
+  }
+
+  function maybeRefreshCluster() {
+    if (clusterInitialised && clusterData && window._clusterRender) {
+      window._clusterRender();
+    }
   }
 
   // ── Render full grid ────────────────────────────────────────────────────────
@@ -285,13 +293,39 @@ window.initDemo = function () {
       card.className = `result-card-item ${isMeteor ? 'result-card-item--meteor' : 'result-card-item--non-meteor'}`;
       card.dataset.filename = r.filename;
 
+      // Build subclass section for non-meteors
+      let subclassHtml = '';
+      if (!isMeteor && r.subclass?.ranked_subclasses?.length) {
+        const top    = r.subclass.ranked_subclasses.slice(0, 5);
+        const rows   = top.map(s => {
+          const spct = Math.round(s.probability * 100);
+          return `
+            <div class="rci__sub-row">
+              <span class="rci__sub-label">${s.label}</span>
+              <div class="rci__sub-track">
+                <div class="rci__sub-fill" style="width:${spct}%"></div>
+              </div>
+              <span class="rci__sub-pct">${spct}%</span>
+            </div>`;
+        }).join('');
+
+        subclassHtml = `
+          <div class="rci__subclass">
+            <span class="rci__subclass-title">
+              Cluster ${r.subclass.cluster_id}
+              &middot; likely: <em>${r.subclass.dominant_label}</em>
+            </span>
+            ${rows}
+          </div>`;
+      }
+
       card.innerHTML = `
         <div class="rci__image-wrap">
           <img src="data:image/png;base64,${r.image_b64}"
                alt="Cropped sum image for ${r.filename}"
                class="rci__image">
           <div class="rci__badge rci__badge--${isMeteor ? 'meteor' : 'non'}">
-            ${isMeteor ? '✦ Meteor' : '✕ Non-meteor'}
+            ${isMeteor ? '&#10022; Meteor' : '&#10005; Non-meteor'}
           </div>
         </div>
         <div class="rci__body">
@@ -309,6 +343,7 @@ window.initDemo = function () {
             <span class="rci__prob-label">Non-meteor</span>
             <span class="rci__prob-val">${Math.round((r.probabilities['non-meteor'] || 0) * 100)}%</span>
           </div>
+          ${subclassHtml}
         </div>`;
 
       gridEl.appendChild(card);
@@ -439,23 +474,204 @@ window.initDemo = function () {
     if (stored.length >= WARN_AT) showStorageWarning(stored.length);
   }
 
-  // ── Cluster plot stub ────────────────────────────────────────────────────────
+  // ── Cluster plot ─────────────────────────────────────────────────────────────
+  // 14 distinct colours — one per non-meteor subclass
+  const SUBCLASS_COLOURS = {
+    'airplane':          '#7aaed4',
+    'artificial_lights': '#c9a84c',
+    'bird':              '#84c97a',
+    'camera_artifact':   '#d47a7a',
+    'christmas_lights':  '#c97acd',
+    'clouds/background': '#7ac9c9',
+    'cosmic_ray':        '#c9aa7a',
+    'insect':            '#a47ac9',
+    'iridium':           '#7ac984',
+    'lightning':         '#c9c97a',
+    'satellite':         '#7a84c9',
+    'stars':             '#c97aaa',
+    'water_drop':        '#d4a87a',
+  };
+  const CLUSTER_PALETTE = [
+    '#c9a84c','#7aaed4','#d47a7a','#84c97a',
+    '#c97acd','#7ac9c9','#c9aa7a','#7a84c9',
+    '#c9c97a','#a47ac9','#7ac984','#c97aaa',
+    '#d4a87a','#7ac9aa','#aa7ac9','#c9d47a',
+    '#7aaac9','#c97a84','#84aac9','#c9847a',
+  ];
+  const NEW_POINT_COLOUR = '#ff6b6b';
+  const BASE_POINT_SIZE  = 5;
+  const NEW_POINT_SIZE   = 12;
+
   let clusterInitialised = false;
+  let clusterData        = null;
+
   function initClusterPlot() {
     if (clusterInitialised) return;
     clusterInitialised = true;
+
     fetch('assets/data/embeddings.json')
-      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(() => {
-        const plotEl      = document.getElementById('cluster-plot');
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+      .then(data => {
+        clusterData = data;
+
         const placeholder = document.querySelector('.viz-placeholder');
         const vizArea     = document.querySelector('.viz-area');
+        const plotEl      = document.getElementById('cluster-plot');
+        const notice      = document.querySelector('#tab-cluster .notice');
+
         if (placeholder) placeholder.style.display = 'none';
+        if (notice)      notice.style.display      = 'none';
         if (vizArea)     vizArea.classList.remove('viz-area--empty');
-        if (plotEl)      plotEl.style.display = 'block';
+        if (plotEl)      plotEl.style.display      = 'block';
+
+        renderClusterPlot(data, loadStored());
+        updateClusterLegend(data);
       })
-      .catch(() => console.info('demo.js: embeddings.json not found.'));
+      .catch(() => {
+        console.info('demo.js: embeddings.json not found — cluster plot disabled.');
+      });
   }
+
+  function renderClusterPlot(data, storedPredictions) {
+    if (!data || !window.Plotly) return;
+
+    const plotEl = document.getElementById('cluster-plot');
+    if (!plotEl) return;
+
+    const viewMode = document.querySelector('input[name="cluster-view"]:checked')?.value || 'label';
+    const profiles = data.cluster_profiles || {};
+    const traces   = [];
+
+    if (viewMode === 'label') {
+      // Colour by subclass name (label IS the subclass for non-meteors)
+      const byLabel = {};
+      data.points.forEach(p => {
+        (byLabel[p.label] = byLabel[p.label] || []).push(p);
+      });
+
+      Object.entries(byLabel).sort().forEach(([label, pts]) => {
+        const colour = SUBCLASS_COLOURS[label] || '#888888';
+        traces.push({
+          type: 'scatter', mode: 'markers', name: label,
+          x:    pts.map(p => p.x),
+          y:    pts.map(p => p.y),
+          text: pts.map(p => {
+            const prof = profiles[String(p.cluster)] || {};
+            return `<b>${p.filename}</b><br>` +
+                   `Label: ${p.label}<br>` +
+                   `Cluster: ${p.cluster}` +
+                   (prof.dominant_label ? `<br>Cluster dominant: ${prof.dominant_label}` : '');
+          }),
+          hoverinfo: 'text',
+          marker: { size: BASE_POINT_SIZE, color: colour, opacity: 0.8 },
+        });
+      });
+
+    } else {
+      // Colour by KMeans cluster id, show dominant label in legend
+      const byCluster = {};
+      data.points.forEach(p => {
+        (byCluster[p.cluster] = byCluster[p.cluster] || []).push(p);
+      });
+
+      Object.entries(byCluster)
+        .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
+        .forEach(([cid, pts], i) => {
+          const prof    = profiles[cid] || {};
+          const name    = `C${cid}: ${prof.dominant_label || '?'}`;
+          const colour  = CLUSTER_PALETTE[parseInt(cid) % CLUSTER_PALETTE.length];
+          traces.push({
+            type: 'scatter', mode: 'markers', name,
+            x:    pts.map(p => p.x),
+            y:    pts.map(p => p.y),
+            text: pts.map(p => {
+              const topLabels = Object.entries(prof)
+                .filter(([k]) => !['n_samples','dominant_label'].includes(k))
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(([k, v]) => `${k}: ${v}%`)
+                .join('<br>');
+              return `<b>${p.filename}</b><br>` +
+                     `True label: ${p.label}<br>` +
+                     `Cluster ${cid}<br>${topLabels}`;
+            }),
+            hoverinfo: 'text',
+            marker: { size: BASE_POINT_SIZE, color: colour, opacity: 0.8 },
+          });
+        });
+    }
+
+    // ── Overlay: newly predicted non-meteors ─────────────────────────────────
+    const newNonMeteors = storedPredictions.filter(r => r.predicted_class === 'non-meteor');
+    if (newNonMeteors.length > 0) {
+      traces.push({
+        type: 'scatter', mode: 'markers',
+        name: 'New predictions',
+        x:    new Array(newNonMeteors.length).fill(null),  // no coords yet
+        y:    new Array(newNonMeteors.length).fill(null),
+        text: newNonMeteors.map(r =>
+          `<b>NEW: ${r.filename}</b><br>` +
+          `Cluster: ${r.subclass?.cluster_id ?? '?'}<br>` +
+          `Likely: ${r.subclass?.dominant_label ?? '?'}`
+        ),
+        hoverinfo: 'text',
+        marker: {
+          size:    NEW_POINT_SIZE,
+          color:   NEW_POINT_COLOUR,
+          symbol:  'star',
+          opacity: 1,
+          line:    { color: '#fff', width: 1 },
+        },
+      });
+    }
+
+    const layout = {
+      paper_bgcolor: 'transparent',
+      plot_bgcolor:  'transparent',
+      font:   { family: 'JetBrains Mono, monospace', color: '#8a8580', size: 11 },
+      xaxis:  { showgrid: false, zeroline: false, showticklabels: false, title: 't-SNE 1' },
+      yaxis:  { showgrid: false, zeroline: false, showticklabels: false, title: 't-SNE 2' },
+      legend: {
+        bgcolor:     'rgba(13,18,32,0.9)',
+        bordercolor: 'rgba(180,160,100,0.15)',
+        borderwidth: 1,
+        font:        { size: 10 },
+      },
+      margin:    { l: 40, r: 20, t: 20, b: 40 },
+      hovermode: 'closest',
+    };
+
+    window.Plotly.react('cluster-plot', traces, layout, {
+      responsive:  true,
+      displaylogo: false,
+      modeBarButtonsToRemove: ['select2d','lasso2d','toImage'],
+    });
+  }
+
+  function updateClusterLegend(data) {
+    const legendEl = document.querySelector('.cluster-legend__items');
+    if (!legendEl) return;
+    legendEl.innerHTML = '';
+
+    // Subclass colours
+    const subclasses = data.subclasses || [];
+    subclasses.forEach(label => {
+      const colour = SUBCLASS_COLOURS[label] || '#888';
+      const div    = document.createElement('div');
+      div.className = 'legend-item';
+      div.innerHTML = `<span class="legend-item__dot" style="background:${colour}"></span>${label}`;
+      legendEl.appendChild(div);
+    });
+
+    // New predictions
+    const div = document.createElement('div');
+    div.className = 'legend-item';
+    div.innerHTML = `<span class="legend-item__dot" style="background:${NEW_POINT_COLOUR};clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)"></span>New (predicted)`;
+    legendEl.appendChild(div);
+  }
+
+  // Expose so router.js toggle listener can trigger re-render
+  window._clusterRender = () => renderClusterPlot(clusterData, loadStored());
 };
 
 document.addEventListener('DOMContentLoaded', () => {

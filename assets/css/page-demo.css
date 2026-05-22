@@ -599,3 +599,110 @@
   margin: 0;
   transition: all 0.3s;
 }
+
+/* ── Cluster view toggle ─────────────────────────────────────── */
+.cluster-view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cluster-view-toggle__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cluster-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.cluster-toggle-btn input[type="radio"] {
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+.cluster-toggle-btn span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.cluster-toggle-btn:has(input:checked) span {
+  color: var(--gold);
+}
+
+/* ── Subclass prediction bars (non-meteor cards) ─────────────── */
+.rci__subclass {
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rci__subclass-title {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.rci__subclass-title em {
+  color: var(--blue-star);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.rci__sub-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rci__sub-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  width: 6.5rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rci__sub-track {
+  flex: 1;
+  height: 3px;
+  background: var(--bg-surface);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rci__sub-fill {
+  height: 100%;
+  background: var(--blue-star);
+  border-radius: 2px;
+  opacity: 0.7;
+  transition: width 0.5s var(--ease-out-expo);
+}
+
+.rci__sub-pct {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  min-width: 2.2rem;
+  text-align: right;
+  flex-shrink: 0;
+}
