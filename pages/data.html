@@ -1,15 +1,11 @@
-<!-- ═══════════════════════════════════════════════════════════════
-     pages/data.html
-     Dataset page fragment.
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- pages/data.html -->
 
 <div class="content-wrapper content-wrapper--page">
 
-  <!-- Page hero -->
   <div class="page-hero">
-    <div class="section-label">Dataset</div>
-    <h1>The Data Behind the Model</h1>
-    <p class="page-intro">
+    <div class="section-label" data-i18n="data.label">Dataset</div>
+    <h1 data-i18n="data.title">The Data Behind the Model</h1>
+    <p class="page-intro" data-i18n="data.intro">
       A core contribution of this project is the construction of a curated,
       balanced dataset of meteor and non-meteor events &mdash; recorded at the
       SPMN station in Folgueroles, Barcelona, and processed into a form
@@ -18,56 +14,56 @@
   </div>
 
 
-  <!-- 01 &middot; Origins -->
+  <!-- 01 Origins -->
   <section class="section">
-    <div class="section-label">01 &middot; Origins</div>
+    <div class="section-label" data-i18n="data.s1.label">01 &middot; Origins</div>
 
     <div class="two-col">
       <div class="col-text">
-        <h2>Where the Data Comes From</h2>
-        <p>
-          All recordings originate from the <strong>Folgueroles station</strong> of the
+        <h2 data-i18n="data.s1.title">Where the Data Comes From</h2>
+        <p data-i18n="data.s1.p1">
+          All recordings originate from the Folgueroles station of the
           Spanish Fireball and Meteorite Recovery Network (SPMN). The station runs
           four grayscale cameras pointing to different regions of the sky &mdash;
           North-East, West, South, and East &mdash; continuously capturing the
           night sky using motion-detection software (UFOCaptureV2).
         </p>
-        <p>
+        <p data-i18n="data.s1.p2">
           Each detected event produces a short video clip alongside XML metadata
           encoding trajectory coordinates, brightness values, duration, and camera
           information. Because non-meteor events were historically discarded,
-          systematic saving of both classes began on <strong>4 October 2025</strong>
+          systematic saving of both classes began on 4 October 2025
           specifically for this project.
         </p>
       </div>
 
       <aside class="col-aside">
         <div class="info-card">
-          <div class="info-card__header">Dataset Summary</div>
+          <div class="info-card__header" data-i18n="data.card.title">Dataset Summary</div>
           <div class="info-card__body">
             <ul class="info-list">
               <li>
-                <span class="info-list__label">Total samples</span>
+                <span class="info-list__label" data-i18n="data.card.total">Total samples</span>
                 <span class="info-list__value">51,700</span>
               </li>
               <li>
-                <span class="info-list__label">Meteors</span>
+                <span class="info-list__label" data-i18n="data.card.meteors">Meteors</span>
                 <span class="info-list__value">25,851</span>
               </li>
               <li>
-                <span class="info-list__label">Non-meteors</span>
+                <span class="info-list__label" data-i18n="data.card.nonMeteors">Non-meteors</span>
                 <span class="info-list__value">25,851</span>
               </li>
               <li>
-                <span class="info-list__label">Subclass labels</span>
-                <span class="info-list__value">14 classes &middot; 2,591 samples</span>
+                <span class="info-list__label" data-i18n="data.card.subclass">Subclass labels</span>
+                <span class="info-list__value" data-i18n="data.card.subclassVal">14 classes &middot; 2,591 samples</span>
               </li>
               <li>
-                <span class="info-list__label">Cameras</span>
+                <span class="info-list__label" data-i18n="data.card.cameras">Cameras</span>
                 <span class="info-list__value">NE &middot; W &middot; S &middot; E</span>
               </li>
               <li>
-                <span class="info-list__label">Collection period</span>
+                <span class="info-list__label" data-i18n="data.card.period">Collection period</span>
                 <span class="info-list__value">2023 &ndash; 2026</span>
               </li>
             </ul>
@@ -78,62 +74,60 @@
   </section>
 
 
-  <!-- 02 &middot; Processing Pipeline -->
+  <!-- 02 Processing Pipeline -->
   <section class="section">
-    <div class="section-label">02 &middot; Processing Pipeline</div>
-    <h2>From Raw Video to Training Sample</h2>
+    <div class="section-label" data-i18n="data.s2.label">02 &middot; Processing Pipeline</div>
+    <h2 data-i18n="data.s2.title">From Raw Video to Training Sample</h2>
 
     <div class="timeline">
 
       <div class="timeline__step">
         <div class="timeline__dot"></div>
-        <h3>Manual collection &amp; labelling</h3>
-        <p>
+        <h3 data-i18n="data.step1.title">Manual collection &amp; labelling</h3>
+        <p data-i18n="data.step1.desc">
           Recordings from all four cameras were saved and manually labelled as
-          <em>meteor</em> or <em>non-meteor</em> using the station&rsquo;s
-          existing software interface. Meteor data from a prior archive
-          (2023&ndash;2025) was included to achieve a balanced dataset.
+          meteor or non-meteor using the station's existing software interface.
+          Meteor data from a prior archive (2023&ndash;2025) was included to achieve
+          a balanced dataset.
         </p>
       </div>
 
       <div class="timeline__step">
         <div class="timeline__dot"></div>
-        <h3>Sum image construction</h3>
-        <p>
+        <h3 data-i18n="data.step2.title">Sum image construction</h3>
+        <p data-i18n="data.step2.desc">
           Rather than using raw video frames, each clip is compressed into a
-          single <strong>sum image</strong>: the first frame (background) is
-          subtracted from all subsequent frames, and the results are accumulated
-          via a pixel-wise maximum. This isolates the moving object&rsquo;s full
-          trajectory in one compact representation.
+          single sum image: the first frame (background) is subtracted from all
+          subsequent frames, and the results are accumulated via a pixel-wise maximum.
+          This isolates the moving object's full trajectory in one compact representation.
         </p>
       </div>
 
       <div class="timeline__step">
         <div class="timeline__dot"></div>
-        <h3>Cropping</h3>
-        <p>
-          XML metadata provides the bounding coordinates of the detected
-          trajectory. Each sum image is cropped around this region with a fixed
-          padding, centering the input on the object of interest and discarding
-          irrelevant sky background.
+        <h3 data-i18n="data.step3.title">Cropping</h3>
+        <p data-i18n="data.step3.desc">
+          XML metadata provides the bounding coordinates of the detected trajectory.
+          Each sum image is cropped around this region with a fixed padding, centering
+          the input on the object of interest and discarding irrelevant sky background.
         </p>
       </div>
 
       <div class="timeline__step">
         <div class="timeline__dot"></div>
-        <h3>Histogram enhancement</h3>
-        <p>
-          Four contrast-enhancement techniques are applied to the cropped images
-          &mdash; min-max stretch, percentile stretch, global thresholding, and
-          a custom meteor stretch using per-recording brightness metadata &mdash;
-          and retained as candidate augmentations for the contrastive training stage.
+        <h3 data-i18n="data.step4.title">Histogram enhancement</h3>
+        <p data-i18n="data.step4.desc">
+          Four contrast-enhancement techniques are applied to the cropped images &mdash;
+          min-max stretch, percentile stretch, global thresholding, and a custom meteor
+          stretch using per-recording brightness metadata &mdash; and retained as candidate
+          augmentations for the contrastive training stage.
         </p>
       </div>
 
       <div class="timeline__step">
         <div class="timeline__dot"></div>
-        <h3>Subclass test-set labelling</h3>
-        <p>
+        <h3 data-i18n="data.step5.title">Subclass test-set labelling</h3>
+        <p data-i18n="data.step5.desc">
           To evaluate the secondary clustering objective, 2,591 non-meteor samples
           were manually labelled into 14 fine-grained subclasses (planes, birds,
           insects, lightning, artificial lights, and others), providing a ground-truth
@@ -145,47 +139,46 @@
   </section>
 
 
-  <!-- 03 &middot; Access & Citation -->
+  <!-- 03 Access & Citation -->
   <section class="section">
-    <div class="section-label">03 &middot; Access &amp; Citation</div>
-    <h2>Download &amp; Cite</h2>
-    <p>
+    <div class="section-label" data-i18n="data.s3.label">03 &middot; Access &amp; Citation</div>
+    <h2 data-i18n="data.s3.title">Download &amp; Cite</h2>
+    <p data-i18n="data.s3.desc">
       The dataset is publicly available. If you use it in your research,
       please cite the accompanying project report.
     </p>
 
     <div class="download-bar">
       <div class="download-bar__info">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="1.5">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <rect x="3" y="3" width="18" height="18" rx="2"/>
           <path d="M3 9h18M9 21V9"/>
         </svg>
-        <span>SPMN Folgueroles Dataset v1.0 <span class="tag">TBD MB</span></span>
+        <span data-i18n="data.downloadLabel">SPMN Folgueroles Dataset v1.0</span>
+        <span class="tag">TBD MB</span>
       </div>
-      <a href="https://doi.org/10.34740/kaggle/ds/10517445" class="btn btn--primary" target="_blank">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2">
+      <a href="https://doi.org/10.34740/kaggle/ds/10517445" class="btn btn--primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
           <polyline points="7 10 12 15 17 10"/>
           <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
-        Download
+        <span data-i18n="data.download">Download</span>
       </a>
     </div>
 
     <div class="code-block">
-      <div class="code-block__label">BibTeX citation</div>
-      <pre><code>@misc{aurora_2026,
-        title={SPMN Night Sky Event Dataset},
-        url={https://www.kaggle.com/ds/10517445},
-        DOI={10.34740/KAGGLE/DS/10517445},
-        publisher={Kaggle},
-        author={Aurora},
-        year={2026}
-      }</code></pre>
+      <div class="code-block__label" data-i18n="data.bibtexLabel">BibTeX citation</div>
+      <pre><code>@misc{pujols2026meteors,
+  title   = {Contrastive Self-Supervised Learning for
+             Astronomical Phenomena Identification},
+  author  = {Aurora Pujols Rial},
+  year    = {2026},
+  note    = {Final Degree Project, Universitat Pompeu Fabra},
+  url     = {https://github.com/aurorapujols/treball-final-de-grau}
+}</code></pre>
     </div>
 
   </section>
 
-</div><!-- /content-wrapper -->
+</div>

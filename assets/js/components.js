@@ -61,16 +61,15 @@
       </div>
     </nav>`;
 
-  // ── Footer HTML ───────────────────────────────────────────────
   const FOOTER_HTML = `
     <footer id="site-footer">
       <div class="footer__inner">
         <p>
-          <strong>Contrastive Self-Supervised Learning for Astronomical Phenomena Identification</strong><br>
-          Final Degree Project · AURORA Pujols Rial · Universitat Pompeu Fabra · 2026
+          <strong data-i18n="footer.title">Contrastive Self-Supervised Learning for Astronomical Phenomena Identification</strong><br>
+          <span data-i18n="footer.sub">Final Degree Project &middot; AURORA Pujols Rial &middot; Universitat Pompeu Fabra &middot; 2026</span>
         </p>
-        <p class="footer__copy">
-          Built with Claude.ai &nbsp;·&nbsp; Backend Deployed with Railway &nbsp;·&nbsp; Hosted on GitHub Pages
+        <p class="footer__copy" data-i18n="footer.built">
+          Built with Claude.ai &nbsp;&middot;&nbsp; Backend Deployed with Railway &nbsp;&middot;&nbsp; Hosted on GitHub Pages
         </p>
       </div>
     </footer>`;

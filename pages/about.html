@@ -17,11 +17,10 @@
     <div class="two-col">
 
       <div class="col-text">
-        <div class="section-label">The Author</div>
-        <!-- ✏ Replace with your name and a short bio -->
+        <div class="section-label" data-i18n="about.author">The Author</div>
         <h2>AURORA PUJOLS RIAL</h2>
-        <p>
-          Student of Mathematical Engineering on Data Science 
+        <p data-i18n="about.bio">
+          Student of Mathematical Engineering on Data Science
           at Universitat Pompeu Fabra, Barcelona.
         </p>
 
@@ -105,31 +104,26 @@
   </section>
 
 
-  <!-- Resources -->
   <section class="section">
-    <div class="section-label">Resources</div>
-    <h2>Links &amp; Downloads</h2>
+    <div class="section-label" data-i18n="about.res.label">Resources</div>
+    <h2 data-i18n="about.res.title">Links &amp; Downloads</h2>
 
     <div class="resources-grid">
 
-      <!-- ✏ Replace href with path to your PDF -->
       <a href="assets/report.pdf" class="resource-card" download>
         <div class="resource-card__icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="1.5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
           </svg>
         </div>
         <div class="resource-card__text">
-          <strong>Full Report</strong>
-          <span>PDF · Thesis document</span>
+          <strong data-i18n="about.report">Full Report</strong>
+          <span data-i18n="about.report.sub">PDF &middot; Thesis document</span>
         </div>
       </a>
 
-      <!-- ✏ Replace href with your actual repo URL -->
-      <a href="https://github.com/aurorapujols/treball-final-de-grau"
-         target="_blank" rel="noopener" class="resource-card">
+      <a href="https://github.com/aurorapujols/treball-final-de-grau" target="_blank" rel="noopener" class="resource-card">
         <div class="resource-card__icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18
@@ -149,24 +143,22 @@
           </svg>
         </div>
         <div class="resource-card__text">
-          <strong>Code Repository</strong>
-          <span>GitHub · Source code</span>
+          <strong data-i18n="about.code">Code Repository</strong>
+          <span data-i18n="about.code.sub">GitHub &middot; Source code</span>
         </div>
       </a>
 
-      <!-- ✏ Replace href with your dataset URL (Zenodo, Kaggle, Drive, etc.) -->
-      <a href="https://doi.org/10.34740/kaggle/ds/10517445" class="resource-card" target="_blank">
+      <a href="https://doi.org/10.34740/kaggle/ds/10517445" class="resource-card">
         <div class="resource-card__icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="1.5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <ellipse cx="12" cy="5" rx="9" ry="3"/>
             <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
             <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
           </svg>
         </div>
         <div class="resource-card__text">
-          <strong>Dataset</strong>
-          <span>Download · v1.0</span>
+          <strong data-i18n="about.dataset">Dataset</strong>
+          <span data-i18n="about.dataset.sub">Download &middot; v1.0</span>
         </div>
       </a>
 
