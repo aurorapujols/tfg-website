@@ -1,7 +1,7 @@
 # Contrastive Self-Supervised Learning for Astronomical Phenomena Identification
 
-> **TFG · YOUR NAME · Universitat de Barcelona · 2025**  
-> Live site: `https://YOUR_USERNAME.github.io/YOUR_REPO`
+> **TFG · AURORA Pujols Rial · Universitat Pompeu Fabra · 2026**  
+> Live site: `https://aurorapujols.github.io/tfg-website`
 
 ---
 

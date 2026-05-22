@@ -15,7 +15,7 @@
 ═══════════════════════════════════════════════════════════════ */
 
 // ── API endpoint ─────────────────────────────────────────────────────────────
-const API_URL = 'http://localhost:8000';   // ← change to Railway URL for production
+const API_URL = 'http://tfg-website-backend-production.up.railway.app';   // ← change to Railway URL for production
 
 // ── Exposed so router.js can re-run after navigation ─────────────────────────
 window.initDemo = function () {
