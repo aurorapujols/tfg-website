@@ -1,21 +1,21 @@
 /* ═══════════════════════════════════════════════════════════════
    demo.js
-   Handles all interactivity on the Demo page:
-     • Tab switching (Prediction / Cluster Explorer)
-     • File upload (drag-and-drop, browse, or .zip)
-     • Calls the Python backend API
-     • Renders the results grid
-     • CSV + image download
-     • Cluster visualisation stub
 
-   CONFIGURATION
-   ──────────────
-   Change API_URL to your Railway deployment URL before going live.
-   During local development, run `uvicorn app:app --port 8000` in backend/.
+   Features:
+     • Results persist in localStorage across page refreshes
+     • New uploads append to the existing grid (no reset)
+     • Duplicate filenames are skipped automatically
+     • Storage counter shows X / MAX_STORED predictions
+     • At 45/50 predictions a warning banner appears
+     • At 50 predictions: auto-downloads CSV + images zip, then clears
+     • Manual "Clear all" button always available
+     • CSV and image downloads cover ALL stored results
 ═══════════════════════════════════════════════════════════════ */
 
-// ── API endpoint ─────────────────────────────────────────────────────────────
-const API_URL = 'https://tfg-website-backend-production.up.railway.app';   // ← change to Railway URL for production
+const API_URL    = 'https://intuitive-strength.up.railway.app';
+const STORAGE_KEY = 'meteor_predictions_v1';
+const MAX_STORED  = 50;
+const WARN_AT     = 45;
 
 // ── Exposed so router.js can re-run after navigation ─────────────────────────
 window.initDemo = function () {
@@ -36,6 +36,30 @@ window.initDemo = function () {
     });
   });
 
+  // ── localStorage helpers ────────────────────────────────────────────────────
+  function loadStored() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveStored(results) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+    } catch (e) {
+      // localStorage full — trigger download and clear
+      console.warn('localStorage full:', e);
+      triggerDownloadAndClear();
+    }
+  }
+
+  function clearStored() {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
   // ── Upload zone ─────────────────────────────────────────────────────────────
   const zone      = document.getElementById('upload-zone');
   const fileInput = document.getElementById('file-input');
@@ -52,14 +76,13 @@ window.initDemo = function () {
   });
   fileInput.addEventListener('change', () => {
     if (fileInput.files?.length) handleFiles(fileInput.files);
+    fileInput.value = '';   // reset so same file can be re-selected
   });
 
   // ── File handling ───────────────────────────────────────────────────────────
   function handleFiles(fileList) {
     const files = Array.from(fileList);
     const label = zone.querySelector('.upload-zone__primary');
-
-    // Show file count summary
     const zips  = files.filter(f => f.name.toLowerCase().endsWith('.zip'));
     const avis  = files.filter(f => f.name.toLowerCase().endsWith('.avi'));
     const xmls  = files.filter(f => f.name.toLowerCase().endsWith('.xml'));
@@ -87,7 +110,7 @@ window.initDemo = function () {
       });
 
       if (res.status === 503) {
-        showError('Model weights are not loaded on the server yet. See backend/README.md.');
+        showError('Model weights are not loaded on the server yet.');
         return;
       }
       if (!res.ok) {
@@ -97,64 +120,73 @@ window.initDemo = function () {
       }
 
       const data = await res.json();
-      showResults(data);
+      appendResults(data.results, data.n_skipped, data.skipped);
 
     } catch (err) {
       if (err.name === 'TypeError' && err.message.includes('fetch')) {
-        showError(`Cannot reach the backend at ${API_URL}. Is the server running?`);
+        showError(`Cannot reach the backend at ${API_URL}.`);
       } else {
         showError(`Unexpected error: ${err.message}`);
       }
     }
   }
 
-  // ── UI states ───────────────────────────────────────────────────────────────
-  function showState(state) {
-    const loading = document.getElementById('results-loading');
-    const error   = document.getElementById('results-error');
-    const grid    = document.getElementById('results-grid-section');
+  // ── Append new results to stored + grid ─────────────────────────────────────
+  function appendResults(newResults, nSkipped, skipped) {
+    const stored   = loadStored();
+    const existing = new Set(stored.map(r => r.filename));
 
-    loading?.style && (loading.style.display = state === 'loading' ? 'flex' : 'none');
-    error?.style   && (error.style.display   = state === 'error'   ? 'flex' : 'none');
-    grid?.style    && (grid.style.display    = state === 'results' ? 'block' : 'none');
-  }
+    let added     = 0;
+    let duplicate = 0;
 
-  function showError(message) {
-    showState('error');
-    const el = document.getElementById('error-message');
-    if (el) el.textContent = message;
-  }
-
-  // ── Render results grid ─────────────────────────────────────────────────────
-  function showResults(data) {
-    showState('results');
-
-    const { results, n_processed, n_skipped, skipped } = data;
-
-    // Summary bar
-    const summaryEl = document.getElementById('results-summary');
-    if (summaryEl) {
-      const meteors    = results.filter(r => r.predicted_class === 'meteor').length;
-      const nonMeteors = results.filter(r => r.predicted_class === 'non-meteor').length;
-      summaryEl.innerHTML =
-        `<span class="summary-stat"><strong>${n_processed}</strong> processed</span>` +
-        `<span class="summary-divider">·</span>` +
-        `<span class="summary-stat meteor-stat"><strong>${meteors}</strong> meteor${meteors !== 1 ? 's' : ''}</span>` +
-        `<span class="summary-divider">·</span>` +
-        `<span class="summary-stat non-stat"><strong>${nonMeteors}</strong> non-meteor${nonMeteors !== 1 ? 's' : ''}</span>` +
-        (n_skipped ? `<span class="summary-divider">·</span><span class="summary-stat skip-stat">${n_skipped} skipped</span>` : '');
+    for (const r of newResults) {
+      if (existing.has(r.filename)) {
+        duplicate++;
+        continue;
+      }
+      stored.push(r);
+      existing.add(r.filename);
+      added++;
     }
 
-    // Results grid
+    saveStored(stored);
+    renderGrid(stored);
+    updateCounter(stored.length);
+    showState('results');
+
+    // Show what happened in the upload zone label
+    const label = zone.querySelector('.upload-zone__primary');
+    let msg = `✦  ${added} added`;
+    if (duplicate) msg += ` · ${duplicate} duplicate${duplicate > 1 ? 's' : ''} skipped`;
+    if (nSkipped)  msg += ` · ${nSkipped} failed`;
+    if (label) label.textContent = msg;
+
+    // Check if approaching or at limit
+    if (stored.length >= MAX_STORED) {
+      triggerDownloadAndClear();
+    } else if (stored.length >= WARN_AT) {
+      showStorageWarning(stored.length);
+    }
+  }
+
+  // ── Render the full grid from stored results ────────────────────────────────
+  function renderGrid(results) {
     const gridEl = document.getElementById('results-grid');
     if (!gridEl) return;
+
     gridEl.innerHTML = '';
 
+    if (!results.length) {
+      showState('idle');
+      return;
+    }
+
     results.forEach(r => {
-      const isMeteor  = r.predicted_class === 'meteor';
-      const pct       = Math.round(r.confidence * 100);
-      const card      = document.createElement('div');
-      card.className  = `result-card-item ${isMeteor ? 'result-card-item--meteor' : 'result-card-item--non-meteor'}`;
+      const isMeteor = r.predicted_class === 'meteor';
+      const pct      = Math.round(r.confidence * 100);
+      const card     = document.createElement('div');
+      card.className = `result-card-item ${isMeteor ? 'result-card-item--meteor' : 'result-card-item--non-meteor'}`;
+      card.dataset.filename = r.filename;
 
       card.innerHTML = `
         <div class="rci__image-wrap">
@@ -170,7 +202,7 @@ window.initDemo = function () {
           <div class="rci__confidence">
             <span class="rci__conf-label">Confidence</span>
             <div class="rci__conf-track">
-              <div class="rci__conf-fill" style="width:${pct}%; background:${isMeteor ? 'var(--gold)' : 'var(--blue-star)'}"></div>
+              <div class="rci__conf-fill" style="width:${pct}%;background:${isMeteor ? 'var(--gold)' : 'var(--blue-star)'}"></div>
             </div>
             <span class="rci__conf-pct">${pct}%</span>
           </div>
@@ -185,48 +217,149 @@ window.initDemo = function () {
       gridEl.appendChild(card);
     });
 
-    // Store results for download
-    window._lastResults = results;
+    updateSummary(results);
   }
 
-  // ── Download CSV ────────────────────────────────────────────────────────────
-  const btnCsv = document.getElementById('btn-download-csv');
-  btnCsv?.addEventListener('click', () => {
-    if (!window._lastResults?.length) return;
+  // ── Summary bar ─────────────────────────────────────────────────────────────
+  function updateSummary(results) {
+    const summaryEl = document.getElementById('results-summary');
+    if (!summaryEl) return;
+
+    const meteors    = results.filter(r => r.predicted_class === 'meteor').length;
+    const nonMeteors = results.filter(r => r.predicted_class === 'non-meteor').length;
+
+    summaryEl.innerHTML =
+      `<span class="summary-stat"><strong>${results.length}</strong> total</span>` +
+      `<span class="summary-divider">·</span>` +
+      `<span class="summary-stat meteor-stat"><strong>${meteors}</strong> meteor${meteors !== 1 ? 's' : ''}</span>` +
+      `<span class="summary-divider">·</span>` +
+      `<span class="summary-stat non-stat"><strong>${nonMeteors}</strong> non-meteor${nonMeteors !== 1 ? 's' : ''}</span>`;
+  }
+
+  // ── Storage counter ──────────────────────────────────────────────────────────
+  function updateCounter(count) {
+    const el = document.getElementById('storage-counter');
+    if (!el) return;
+    el.textContent = `${count} / ${MAX_STORED} stored`;
+    el.className   = 'storage-counter' +
+      (count >= MAX_STORED ? ' storage-counter--full' :
+       count >= WARN_AT    ? ' storage-counter--warn' : '');
+  }
+
+  // ── Storage warning banner ───────────────────────────────────────────────────
+  function showStorageWarning(count) {
+    const el = document.getElementById('storage-warning');
+    if (!el) return;
+    el.style.display = 'flex';
+    const msg = el.querySelector('#storage-warning-msg');
+    if (msg) msg.textContent =
+      `${count} of ${MAX_STORED} predictions stored. Download your results before the limit is reached.`;
+  }
+
+  // ── Auto download + clear at limit ──────────────────────────────────────────
+  async function triggerDownloadAndClear() {
+    const stored = loadStored();
+    if (!stored.length) return;
+
+    // Show message
+    const el = document.getElementById('storage-warning');
+    if (el) {
+      el.style.display = 'flex';
+      const msg = el.querySelector('#storage-warning-msg');
+      if (msg) msg.textContent =
+        `Storage limit reached (${MAX_STORED}). Downloading your results automatically…`;
+    }
+
+    // Download CSV
+    downloadCSV(stored);
+
+    // Download images zip
+    await downloadImagesZip(stored);
+
+    // Clear after short delay so downloads can start
+    setTimeout(() => {
+      clearStored();
+      renderGrid([]);
+      updateCounter(0);
+      if (el) el.style.display = 'none';
+      const label = zone.querySelector('.upload-zone__primary');
+      if (label) label.textContent = 'Drop files or a .zip here';
+    }, 1500);
+  }
+
+  // ── UI states ────────────────────────────────────────────────────────────────
+  function showState(state) {
+    const loading = document.getElementById('results-loading');
+    const error   = document.getElementById('results-error');
+    const grid    = document.getElementById('results-grid-section');
+
+    if (loading) loading.style.display = state === 'loading' ? 'flex'  : 'none';
+    if (error)   error.style.display   = state === 'error'   ? 'flex'  : 'none';
+    if (grid)    grid.style.display    = (state === 'results' || state === 'idle') ? 'block' : 'none';
+  }
+
+  function showError(message) {
+    showState('error');
+    const el = document.getElementById('error-message');
+    if (el) el.textContent = message;
+  }
+
+  // ── Download CSV (all stored) ────────────────────────────────────────────────
+  function downloadCSV(results) {
     const rows = [
       ['filename', 'predicted_class', 'confidence', 'prob_meteor', 'prob_non_meteor'].join(','),
-      ...window._lastResults.map(r => [
+      ...results.map(r => [
         r.filename,
         r.predicted_class,
         r.confidence,
-        r.probabilities['meteor']     ?? '',
-        r.probabilities['non-meteor'] ?? '',
+        r.probabilities['meteor']      ?? '',
+        r.probabilities['non-meteor']  ?? '',
       ].join(','))
     ];
     downloadBlob(rows.join('\n'), 'predictions.csv', 'text/csv');
-  });
+  }
 
-  // ── Download images ─────────────────────────────────────────────────────────
-  const btnImgs = document.getElementById('btn-download-images');
-  btnImgs?.addEventListener('click', async () => {
-    if (!window._lastResults?.length) return;
-
-    // Dynamically load JSZip from CDN if not already present
+  // ── Download images zip (all stored) ────────────────────────────────────────
+  async function downloadImagesZip(results) {
     if (!window.JSZip) {
       await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
     }
-
     const zip = new window.JSZip();
-    window._lastResults.forEach(r => {
-      const b64data = r.image_b64;
-      zip.file(`${r.filename}_${r.predicted_class}.png`, b64data, { base64: true });
+    results.forEach(r => {
+      zip.file(`${r.filename}_${r.predicted_class}.png`, r.image_b64, { base64: true });
     });
-
     const blob = await zip.generateAsync({ type: 'blob' });
     downloadBlob(blob, 'cropped_images.zip', 'application/zip');
+  }
+
+  // ── Button wiring ────────────────────────────────────────────────────────────
+  document.getElementById('btn-download-csv')?.addEventListener('click', () => {
+    const stored = loadStored();
+    if (stored.length) downloadCSV(stored);
   });
 
-  // ── Helpers ─────────────────────────────────────────────────────────────────
+  document.getElementById('btn-download-images')?.addEventListener('click', async () => {
+    const stored = loadStored();
+    if (stored.length) await downloadImagesZip(stored);
+  });
+
+  document.getElementById('btn-clear-all')?.addEventListener('click', () => {
+    if (!confirm('Clear all stored predictions? This cannot be undone.')) return;
+    clearStored();
+    renderGrid([]);
+    updateCounter(0);
+    showState('idle');
+    const label = zone.querySelector('.upload-zone__primary');
+    if (label) label.textContent = 'Drop files or a .zip here';
+    const warn = document.getElementById('storage-warning');
+    if (warn) warn.style.display = 'none';
+  });
+
+  document.getElementById('btn-download-and-clear')?.addEventListener('click', async () => {
+    await triggerDownloadAndClear();
+  });
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
   function downloadBlob(content, filename, mimeType) {
     const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType });
     const url  = URL.createObjectURL(blob);
@@ -247,7 +380,16 @@ window.initDemo = function () {
     });
   }
 
-  // ── Cluster plot stub ───────────────────────────────────────────────────────
+  // ── On init: restore stored results ─────────────────────────────────────────
+  const stored = loadStored();
+  if (stored.length) {
+    showState('results');
+    renderGrid(stored);
+    updateCounter(stored.length);
+    if (stored.length >= WARN_AT) showStorageWarning(stored.length);
+  }
+
+  // ── Cluster plot stub ────────────────────────────────────────────────────────
   let clusterInitialised = false;
 
   function initClusterPlot() {
@@ -257,17 +399,15 @@ window.initDemo = function () {
     fetch('assets/data/embeddings.json')
       .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
       .then(data => {
-        const plotEl       = document.getElementById('cluster-plot');
-        const placeholder  = document.querySelector('.viz-placeholder');
-        const vizArea      = document.querySelector('.viz-area');
+        const plotEl      = document.getElementById('cluster-plot');
+        const placeholder = document.querySelector('.viz-placeholder');
+        const vizArea     = document.querySelector('.viz-area');
 
         if (placeholder) placeholder.style.display = 'none';
         if (vizArea)     vizArea.classList.remove('viz-area--empty');
         if (plotEl)      plotEl.style.display = 'block';
 
-        // ── Plotly render (uncomment once embeddings.json is ready) ─────────
-        // Add to index.html: <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
-        //
+        // Uncomment once embeddings.json + Plotly are ready:
         // const PALETTE = ['#c9a84c','#7aaed4','#d47a7a','#84c97a','#c97acd'];
         // const byClass = {};
         // data.points.forEach(p => (byClass[p.label] = byClass[p.label] || []).push(p));
@@ -278,19 +418,19 @@ window.initDemo = function () {
         // }));
         // const layout = {
         //   paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
-        //   font:   { family: 'JetBrains Mono, monospace', color: '#8a8580', size: 11 },
-        //   xaxis:  { showgrid: false, zeroline: false, title: 'UMAP 1' },
-        //   yaxis:  { showgrid: false, zeroline: false, title: 'UMAP 2' },
+        //   font: { family: 'JetBrains Mono, monospace', color: '#8a8580', size: 11 },
+        //   xaxis: { showgrid: false, zeroline: false, title: 'UMAP 1' },
+        //   yaxis: { showgrid: false, zeroline: false, title: 'UMAP 2' },
         //   legend: { bgcolor: 'rgba(0,0,0,0)', bordercolor: 'rgba(180,160,100,0.15)' },
         //   margin: { l: 40, r: 20, t: 20, b: 40 }
         // };
         // Plotly.newPlot('cluster-plot', traces, layout, { responsive: true });
       })
-      .catch(() => console.info('demo.js: embeddings.json not found — cluster plot disabled.'));
+      .catch(() => console.info('demo.js: embeddings.json not found.'));
   }
 };
 
-// Auto-init on first load if already on the demo page
+// Auto-init on first load
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     if (document.getElementById('upload-zone')) window.initDemo();

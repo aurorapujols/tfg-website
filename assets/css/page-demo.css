@@ -541,3 +541,44 @@
   }
   .upload-step__arrow { transform: rotate(90deg); }
 }
+
+/* ── Storage counter ─────────────────────────────────────────── */
+.storage-counter {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.storage-counter--warn {
+  color: #c9a84c;
+  border-color: rgba(201,168,76,0.3);
+  background: rgba(201,168,76,0.06);
+}
+.storage-counter--full {
+  color: var(--red-star);
+  border-color: rgba(212,122,122,0.3);
+  background: rgba(212,122,122,0.06);
+}
+
+/* ── Storage warning banner ──────────────────────────────────── */
+.storage-warning {
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: rgba(201,168,76,0.08);
+  border-color: rgba(201,168,76,0.3);
+  margin-bottom: 1rem;
+}
+.storage-warning svg { color: #c9a84c; flex-shrink: 0; }
+
+/* ── Toolbar left side (summary + counter) ───────────────────── */
+.results-toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
