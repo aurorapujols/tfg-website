@@ -475,7 +475,6 @@ window.initDemo = function () {
   }
 
   // ── Cluster plot ─────────────────────────────────────────────────────────────
-  // 14 distinct colours — one per non-meteor subclass
   const SUBCLASS_COLOURS = {
     'airplane':          '#7aaed4',
     'artificial_lights': '#c9a84c',
@@ -498,145 +497,146 @@ window.initDemo = function () {
     '#d4a87a','#7ac9aa','#aa7ac9','#c9d47a',
     '#7aaac9','#c97a84','#84aac9','#c9847a',
   ];
-  const NEW_POINT_COLOUR = '#ff6b6b';
-  const BASE_POINT_SIZE  = 3;
-  const NEW_POINT_SIZE   = 12;
+  const BASE_POINT_SIZE = 3;
 
   let clusterInitialised = false;
-  let clusterData        = null;
+  let clusterCache       = {};   // { '2d': data, '3d': data }
+  let currentDim         = '2d';
+
+  function getClusterFiles() {
+    return {
+      '2d': 'assets/data/embeddings2d.json',
+      '3d': 'assets/data/embeddings3d.json',
+    };
+  }
 
   function initClusterPlot() {
     if (clusterInitialised) return;
     clusterInitialised = true;
 
-    fetch('assets/data/embeddings.json')
-      .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+    // Wire up dimension toggle
+    document.querySelectorAll('input[name="cluster-dim"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        currentDim = radio.value;
+        loadAndRender(currentDim);
+      });
+    });
+
+    // Wire up colour toggle — re-render same data
+    document.querySelectorAll('input[name="cluster-view"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (clusterCache[currentDim]) {
+          renderClusterPlot(clusterCache[currentDim]);
+        }
+      });
+    });
+
+    // Load initial (2D)
+    loadAndRender('2d');
+  }
+
+  function loadAndRender(dim) {
+    if (clusterCache[dim]) {
+      renderClusterPlot(clusterCache[dim]);
+      return;
+    }
+
+    const url = getClusterFiles()[dim];
+    fetch(url)
+      .then(r => { if (!r.ok) throw new Error(`${url} not found`); return r.json(); })
       .then(data => {
-        clusterData = data;
+        clusterCache[dim] = data;
 
-        const placeholder = document.querySelector('.viz-placeholder');
-        const vizArea     = document.querySelector('.viz-area');
-        const plotEl      = document.getElementById('cluster-plot');
-        const notice      = document.querySelector('#tab-cluster .notice');
+        // Hide placeholder and notice on first successful load
+        const ph     = document.getElementById('viz-placeholder-main');
+        const area   = document.getElementById('viz-area-main');
+        const plot   = document.getElementById('cluster-plot');
+        const notice = document.getElementById('cluster-notice');
+        if (ph)     ph.style.display = 'none';
+        if (area)   area.classList.remove('viz-area--empty');
+        if (plot)   plot.style.display = 'block';
+        if (notice) notice.style.display = 'none';
 
-        if (placeholder) placeholder.style.display = 'none';
-        if (notice)      notice.style.display      = 'none';
-        if (vizArea)     vizArea.classList.remove('viz-area--empty');
-        if (plotEl)      plotEl.style.display      = 'block';
-
-        renderClusterPlot(data, loadStored());
+        renderClusterPlot(data);
         updateClusterLegend(data);
       })
-      .catch(() => {
-        console.info('demo.js: embeddings.json not found — cluster plot disabled.');
+      .catch(err => {
+        console.info(`demo.js: ${err.message} — cluster plot disabled for ${dim}.`);
       });
   }
 
-  function renderClusterPlot(data, storedPredictions) {
+  function renderClusterPlot(data) {
     if (!data || !window.Plotly) return;
 
-    const plotEl = document.getElementById('cluster-plot');
-    if (!plotEl) return;
+    const plotEl  = document.getElementById('cluster-plot');
+    if (!plotEl)  return;
 
+    const is3d     = currentDim === '3d';
     const viewMode = document.querySelector('input[name="cluster-view"]:checked')?.value || 'label';
     const profiles = data.cluster_profiles || {};
     const traces   = [];
 
+    const scatterType = is3d ? 'scatter3d' : 'scatter';
+
     if (viewMode === 'label') {
-      // Colour by subclass name (label IS the subclass for non-meteors)
       const byLabel = {};
-      data.points.forEach(p => {
-        (byLabel[p.label] = byLabel[p.label] || []).push(p);
-      });
+      data.points.forEach(p => { (byLabel[p.label] = byLabel[p.label] || []).push(p); });
 
       Object.entries(byLabel).sort().forEach(([label, pts]) => {
         const colour = SUBCLASS_COLOURS[label] || '#888888';
-        traces.push({
-          type: 'scatter3d', mode: 'markers', name: label,
+        const trace  = {
+          type: scatterType, mode: 'markers', name: label,
           x:    pts.map(p => p.x),
           y:    pts.map(p => p.y),
-          z:    pts.map(p => p.z),
           text: pts.map(p => {
             const prof = profiles[String(p.cluster)] || {};
-            return `<b>${p.filename}</b><br>` +
-                   `Label: ${p.label}<br>` +
-                   `Cluster: ${p.cluster}` +
-                   (prof.dominant_label ? `<br>Cluster dominant: ${prof.dominant_label}` : '');
+            return `<b>${p.filename}</b><br>Label: ${p.label}<br>Cluster: ${p.cluster}` +
+                   (prof.dominant_label ? `<br>Dominant: ${prof.dominant_label}` : '');
           }),
           hoverinfo: 'text',
           marker: { size: BASE_POINT_SIZE, color: colour, opacity: 0.8 },
-        });
+        };
+        if (is3d) trace.z = pts.map(p => p.z || 0);
+        traces.push(trace);
       });
 
     } else {
-      // Colour by KMeans cluster id, show dominant label in legend
       const byCluster = {};
-      data.points.forEach(p => {
-        (byCluster[p.cluster] = byCluster[p.cluster] || []).push(p);
-      });
+      data.points.forEach(p => { (byCluster[p.cluster] = byCluster[p.cluster] || []).push(p); });
 
       Object.entries(byCluster)
         .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
-        .forEach(([cid, pts], i) => {
-          const prof    = profiles[cid] || {};
-          const name    = `C${cid}: ${prof.dominant_label || '?'}`;
-          const colour  = CLUSTER_PALETTE[parseInt(cid) % CLUSTER_PALETTE.length];
-          traces.push({
-            type: 'scatter3d', mode: 'markers', name,
+        .forEach(([cid, pts]) => {
+          const prof   = profiles[cid] || {};
+          const colour = CLUSTER_PALETTE[parseInt(cid) % CLUSTER_PALETTE.length];
+          const trace  = {
+            type: scatterType, mode: 'markers',
+            name: `C${cid}: ${prof.dominant_label || '?'}`,
             x:    pts.map(p => p.x),
             y:    pts.map(p => p.y),
-            z:    pts.map(p => p.z),
             text: pts.map(p => {
-              const topLabels = Object.entries(prof)
+              const top = Object.entries(prof)
                 .filter(([k]) => !['n_samples','dominant_label'].includes(k))
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 3)
-                .map(([k, v]) => `${k}: ${v}%`)
-                .join('<br>');
-              return `<b>${p.filename}</b><br>` +
-                     `True label: ${p.label}<br>` +
-                     `Cluster ${cid}<br>${topLabels}`;
+                .sort((a, b) => b[1] - a[1]).slice(0, 3)
+                .map(([k, v]) => `${k}: ${v}%`).join('<br>');
+              return `<b>${p.filename}</b><br>Label: ${p.label}<br>Cluster ${cid}<br>${top}`;
             }),
             hoverinfo: 'text',
             marker: { size: BASE_POINT_SIZE, color: colour, opacity: 0.8 },
-          });
+          };
+          if (is3d) trace.z = pts.map(p => p.z || 0);
+          traces.push(trace);
         });
     }
 
-    // ── Overlay: newly predicted non-meteors ─────────────────────────────────
-    const newNonMeteors = storedPredictions.filter(r => r.predicted_class === 'non-meteor');
-    if (newNonMeteors.length > 0) {
-      traces.push({
-        type: 'scatter', mode: 'markers',
-        name: 'New predictions',
-        x:    new Array(newNonMeteors.length).fill(null),  // no coords yet
-        y:    new Array(newNonMeteors.length).fill(null),
-        text: newNonMeteors.map(r =>
-          `<b>NEW: ${r.filename}</b><br>` +
-          `Cluster: ${r.subclass?.cluster_id ?? '?'}<br>` +
-          `Likely: ${r.subclass?.dominant_label ?? '?'}`
-        ),
-        hoverinfo: 'text',
-        marker: {
-          size:    NEW_POINT_SIZE,
-          color:   NEW_POINT_COLOUR,
-          symbol:  'star',
-          opacity: 1,
-          line:    { color: '#fff', width: 1 },
-        },
-      });
-    }
+    // NOTE: New predicted non-meteors have no t-SNE coordinates since
+    // they were not part of the original embedding run. Their cluster
+    // assignment is shown directly on the prediction card instead.
 
-    const layout = {
+    const baseLayout = {
       paper_bgcolor: 'transparent',
       plot_bgcolor:  'transparent',
       font:   { family: 'JetBrains Mono, monospace', color: '#8a8580', size: 11 },
-      scene: {                        
-        xaxis: { title: 't-SNE 1', showgrid: false },
-        yaxis: { title: 't-SNE 2', showgrid: false },
-        zaxis: { title: 't-SNE 3', showgrid: false },
-        bgcolor: 'transparent',
-      },
       legend: {
         bgcolor:     'rgba(13,18,32,0.9)',
         bordercolor: 'rgba(180,160,100,0.15)',
@@ -645,7 +645,27 @@ window.initDemo = function () {
       },
       margin:    { l: 40, r: 20, t: 20, b: 40 },
       hovermode: 'closest',
+      autosize:  true,
     };
+
+    const layout = is3d
+      ? { ...baseLayout,
+          scene: {
+            xaxis: { title: 't-SNE 1', showgrid: false, zeroline: false,
+                     backgroundcolor: 'rgba(13,18,32,0)', gridcolor: 'rgba(255,255,255,0.05)' },
+            yaxis: { title: 't-SNE 2', showgrid: false, zeroline: false,
+                     backgroundcolor: 'rgba(13,18,32,0)', gridcolor: 'rgba(255,255,255,0.05)' },
+            zaxis: { title: 't-SNE 3', showgrid: false, zeroline: false,
+                     backgroundcolor: 'rgba(13,18,32,0)', gridcolor: 'rgba(255,255,255,0.05)' },
+            bgcolor: 'rgba(13,18,32,0.3)',
+            aspectmode: 'cube',  // enforces equal axes — makes it feel square
+          },
+        }
+      : { ...baseLayout,
+          xaxis: { showgrid: false, zeroline: false, showticklabels: false, title: 't-SNE 1' },
+          yaxis: { showgrid: false, zeroline: false, showticklabels: false, title: 't-SNE 2',
+                   scaleanchor: 'x', scaleratio: 1 },  // forces square aspect in 2D
+        };
 
     window.Plotly.react('cluster-plot', traces, layout, {
       responsive:  true,
@@ -655,29 +675,23 @@ window.initDemo = function () {
   }
 
   function updateClusterLegend(data) {
-    const legendEl = document.querySelector('.cluster-legend__items');
+    const legendEl = document.getElementById('cluster-legend-items');
     if (!legendEl) return;
     legendEl.innerHTML = '';
 
-    // Subclass colours
-    const subclasses = data.subclasses || [];
-    subclasses.forEach(label => {
+    (data.subclasses || []).forEach(label => {
       const colour = SUBCLASS_COLOURS[label] || '#888';
       const div    = document.createElement('div');
       div.className = 'legend-item';
       div.innerHTML = `<span class="legend-item__dot" style="background:${colour}"></span>${label}`;
       legendEl.appendChild(div);
     });
-
-    // New predictions
-    const div = document.createElement('div');
-    div.className = 'legend-item';
-    div.innerHTML = `<span class="legend-item__dot" style="background:${NEW_POINT_COLOUR};clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)"></span>New (predicted)`;
-    legendEl.appendChild(div);
   }
 
-  // Expose so router.js toggle listener can trigger re-render
-  window._clusterRender = () => renderClusterPlot(clusterData, loadStored());
+  // Expose for external re-render triggers
+  window._clusterRender = () => {
+    if (clusterCache[currentDim]) renderClusterPlot(clusterCache[currentDim]);
+  };
 };
 
 document.addEventListener('DOMContentLoaded', () => {

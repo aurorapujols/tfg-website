@@ -25,9 +25,9 @@
   ════════════════════════════════════════════════════════════ -->
   <div class="demo-panel active" id="tab-predict">
     <section class="section">
-      <div class="section-label">Classification Model</div>
-      <h2>Meteor vs. Non-meteor</h2>
-      <p>
+      <div class="section-label" data-i18n="predict.label">Classification Model</div>
+      <h2 data-i18n="predict.title">Meteor vs. Non-meteor</h2>
+      <p data-i18n="predict.desc">
         Upload one or more recording pairs (.avi + matching .xml), or bundle them
         all into a single .zip file. The server will generate the cropped sum image
         for each pair and run the trained classifier.
@@ -160,44 +160,57 @@
   ════════════════════════════════════════════════════════════ -->
   <div class="demo-panel" id="tab-cluster">
     <section class="section">
-      <div class="section-label">Cluster Visualisation</div>
-      <h2>Embedding Space Explorer</h2>
-      <p>
-        A t-SNE (2D and 3D) projection of the encoder&rsquo;s learned embedding space,
-        coloured by known class label. Hover over a point
-        to inspect the individual recording.
+      <div class="section-label" data-i18n="cluster.label">Cluster Visualisation</div>
+      <h2 data-i18n="cluster.title">Embedding Space Explorer</h2>
+      <p data-i18n="cluster.desc">
+        A t-SNE projection of the encoder&rsquo;s learned embedding space over the
+        non-meteor test set, coloured by true subclass label or by K-Means cluster.
+        Use the toggles to switch between 2D and 3D views and between colouring modes.
       </p>
 
-      <!-- Legend — update once real class names are known -->
-      <div class="cluster-legend">
-        <div class="cluster-legend__title">Cluster / Class Legend</div>
-        <div class="cluster-legend__items">
-          <div class="legend-item">
-            <span class="legend-item__dot" style="background:#c9a84c"></span>
-            Meteor
+      <!-- Controls row -->
+      <div class="cluster-controls">
+        <!-- Dimension toggle -->
+        <div class="cluster-control-group">
+          <span class="cluster-control-group__label" data-i18n="cluster.dim">Dimensions</span>
+          <div class="cluster-toggle-row">
+            <label class="cluster-toggle-btn">
+              <input type="radio" name="cluster-dim" value="2d" checked>
+              <span>2D</span>
+            </label>
+            <label class="cluster-toggle-btn">
+              <input type="radio" name="cluster-dim" value="3d">
+              <span>3D</span>
+            </label>
           </div>
-          <div class="legend-item">
-            <span class="legend-item__dot" style="background:#7aaed4"></span>
-            Plane
-          </div>
-          <div class="legend-item">
-            <span class="legend-item__dot" style="background:#d47a7a"></span>
-            Bird
-          </div>
-          <div class="legend-item">
-            <span class="legend-item__dot" style="background:#84c97a"></span>
-            Insect
-          </div>
-          <div class="legend-item">
-            <span class="legend-item__dot" style="background:#c97acd"></span>
-            Other
+        </div>
+        <!-- Colour toggle -->
+        <div class="cluster-control-group">
+          <span class="cluster-control-group__label" data-i18n="cluster.colorBy">Colour by</span>
+          <div class="cluster-toggle-row">
+            <label class="cluster-toggle-btn">
+              <input type="radio" name="cluster-view" value="label" checked>
+              <span data-i18n="cluster.trueLabel">True label</span>
+            </label>
+            <label class="cluster-toggle-btn">
+              <input type="radio" name="cluster-view" value="cluster">
+              <span data-i18n="cluster.kmeans">K-Means cluster</span>
+            </label>
           </div>
         </div>
       </div>
 
-      <!-- Visualisation container -->
-      <div class="viz-area viz-area--empty">
-        <div class="viz-placeholder">
+      <!-- Legend -->
+      <div class="cluster-legend">
+        <div class="cluster-legend__title" data-i18n="cluster.legend">Legend</div>
+        <div class="cluster-legend__items" id="cluster-legend-items">
+          <!-- populated by demo.js -->
+        </div>
+      </div>
+
+      <!-- Visualisation area — square, resizable -->
+      <div class="viz-area viz-area--square viz-area--empty" id="viz-area-main">
+        <div class="viz-placeholder" id="viz-placeholder-main">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="1">
             <circle cx="12" cy="12" r="10"/>
@@ -209,24 +222,27 @@
             <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
             <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
           </svg>
-          <p>Interactive cluster plot</p>
-          <span>
-            Add <code>assets/data/embeddings.json</code> and uncomment
-            the Plotly block in <code>assets/js/demo.js</code> to activate.
+          <p data-i18n="cluster.plotTitle">t-SNE cluster plot</p>
+          <span data-i18n="cluster.plotHint">
+            Add <code>assets/data/embeddings2d.json</code> and
+            <code>assets/data/embeddings3d.json</code> to activate.
           </span>
         </div>
         <div id="cluster-plot"></div>
       </div>
 
-      <div class="notice">
+      <div class="notice" id="cluster-notice">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
           <line x1="12" y1="8"  x2="12"    y2="12"/>
           <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
-        Embedding data not yet loaded. See the CLUSTER INTEGRATION POINT
-        in <code>assets/js/demo.js</code> for instructions.
+        <span data-i18n="cluster.notice">
+          Embedding data not yet loaded. Run <code>generate_cluster_data.py</code>
+          and place the outputs at <code>assets/data/embeddings2d.json</code>
+          and <code>assets/data/embeddings3d.json</code>.
+        </span>
       </div>
 
     </section>

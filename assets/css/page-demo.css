@@ -173,7 +173,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
-  min-height: 600px;
+  min-height: 460px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -223,7 +223,7 @@
 /* The actual Plotly/D3 target — hidden until cluster.js loads data */
 #cluster-plot {
   width: 100%;
-  height: 600px;
+  height: 460px;
   display: none; /* cluster.js sets this to block once data is ready */
 }
 
@@ -705,4 +705,49 @@
   min-width: 2.2rem;
   text-align: right;
   flex-shrink: 0;
+}
+
+/* ── Square viz area ─────────────────────────────────────────── */
+.viz-area--square {
+  /* Use aspect-ratio to maintain a square regardless of screen width */
+  aspect-ratio: 1 / 1;
+  min-height: unset;   /* override the rectangle min-height */
+  max-height: 80vw;    /* on very wide screens don't go huge */
+}
+
+/* The Plotly div inside must fill the square container */
+.viz-area--square #cluster-plot {
+  width:  100%;
+  height: 100%;
+  min-height: unset;
+}
+
+/* ── Cluster controls row ────────────────────────────────────── */
+.cluster-controls {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.cluster-control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cluster-control-group__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.cluster-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

@@ -47,6 +47,11 @@
               GitHub
             </a>
           </li>
+          <li>
+            <button class="nav__lang-toggle" id="lang-toggle" aria-label="Switch language">
+              <span id="lang-label">CA</span>
+            </button>
+          </li>
         </ul>
 
         <button class="nav__hamburger" id="nav-hamburger" aria-label="Toggle menu">
