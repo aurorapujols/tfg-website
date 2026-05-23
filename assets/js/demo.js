@@ -274,7 +274,7 @@ window.initDemo = function () {
   }
 
   function maybeRefreshCluster() {
-    if (clusterInitialised && clusterData && window._clusterRender) {
+    if (clusterInitialised && clusterCache[currentDim] && window._clusterRender) {
       window._clusterRender();
     }
   }

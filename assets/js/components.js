@@ -14,14 +14,14 @@
 
         <a class="nav__logo" data-page="home">
           <span class="nav__logo-glyph">✦</span>
-          <span class="nav__logo-text">TFG · 2026 · Mathematical Engineering on Data Science</span>
+          <span class="nav__logo-text" data-i18n="nav.logo"></span>
         </a>
 
         <ul class="nav__links" id="nav-links">
-          <li><a class="nav__link" data-page="home">Overview</a></li>
-          <li><a class="nav__link" data-page="data">Dataset</a></li>
-          <li><a class="nav__link" data-page="demo">Demo</a></li>
-          <li><a class="nav__link" data-page="about">About</a></li>
+        <li><a class="nav__link" data-page="home" data-i18n="nav.overview"></a></li>
+        <li><a class="nav__link" data-page="data" data-i18n="nav.dataset"></a></li>
+        <li><a class="nav__link" data-page="demo" data-i18n="nav.demo"></a></li>
+        <li><a class="nav__link" data-page="about" data-i18n="nav.about"></a></li>
           <li>
             <a class="nav__cta"
                href="https://github.com/aurorapujols/treball-final-de-grau"

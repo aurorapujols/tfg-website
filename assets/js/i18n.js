@@ -17,6 +17,7 @@
     en: {
 
       // ── Nav & Footer ─────────────────────────────────────────
+      'nav.logo': 'TFG · 2026 · Mathematical Engineering on Data Science',
       'nav.overview':  'Overview',
       'nav.dataset':   'Dataset',
       'nav.demo':      'Demo',
@@ -63,7 +64,7 @@
       'home.s3.title':         'What This Project Aims to Achieve',
       'home.obj1.title':       'Primary Objective',
       'home.obj1.p1':          'Develop a classification pipeline that reliably distinguishes between meteor and non-meteor events. By learning a representation that generalizes across the visual characteristics of the station\u2019s recordings, the goal is to achieve high binary classification accuracy using a simple linear probe on top of the learned embeddings.',
-      'home.obj1.p2':          'Because non-meteor data were normally discarded prior to this project, all detections were saved and labelled into the two main classes for the duration of the data collection period \u2014 an effort that is itself a contribution of this work.',
+      'home.obj1.p2':          'Because non-meteor data were normally discarded prior to this project, all detections were saved and labelled into the two main classes for the duration of the data collection period \u2014 by the data provider himself.',
       'home.obj2.title':       'Secondary Objective',
       'home.obj2.p1':          'Classify non-meteor events into specific categories such as planes, birds, insects, lightning, and other sources of false detections. These data carry scientific value in their own right \u2014 for example, recordings of bird migration and flight patterns.',
       'home.obj2.p2':          'The dataset contains no subclass labels for non-meteor phenomena, and its size makes manual annotation impractical. This task is therefore approached using unsupervised clustering applied to the learned embeddings.',
@@ -115,9 +116,21 @@
       // ── Demo ─────────────────────────────────────────────────
       'demo.label':            'Interactive Demo',
       'demo.title':            'Explore the Models',
+      'demo.intro':            "Upload meteor recording pairs (.avi + .xml) or a .zip archive to run the classifier. Results are shown as a grid of cropped sum images, each with its predicted class and confidence score.",
+      'demo.tabPredict':       'Prediction',
+      'demo.tabCluster':       'Cluster Explorer',
+      'upload.step1':          'Pair each .avi with its .xml (filenames must match)',
+      'upload.step2':          'Drop pairs here, or zip them and upload the archive',
+      'upload.step3':          'View cropped images with predictions, then download results',
+      'upload.primary':        'Drop files or a .zip here',
+      'upload.secondary':      'or browse to upload',
+      'upload.hint':           '.avi + .xml pairs · .zip archive · Max 200 MB',
       'predict.label':         'Classification Model',
       'predict.title':         'Meteor vs. Non-meteor',
       'predict.desc':          'Upload one or more recording pairs (.avi + matching .xml), or bundle them all into a single .zip file. The server will generate the cropped sum image for each pair and run the trained classifier.',
+      'results.csv':           'CSV',
+      'results.images':        'Images',
+      'results.clear':         'Clear All',
       'cluster.label':         'Cluster Visualisation',
       'cluster.title':         'Embedding Space Explorer',
       'cluster.desc':          'A t-SNE projection of the encoder\u2019s learned embedding space over the non-meteor test set, coloured by true subclass label or by K-Means cluster. Use the toggles to switch between 2D and 3D views.',
@@ -128,6 +141,11 @@
       'cluster.legend':        'Legend',
       'cluster.plotTitle':     't-SNE cluster plot',
       'cluster.notice':        'Embedding data not yet loaded. Run generate_cluster_data.py and place the outputs at assets/data/embeddings2d.json and assets/data/embeddings3d.json.',
+      'storage.warning':       'Approaching storage limit.',
+      'storage.downloadClear': 'Download & Clear',
+      'error.generic':         'An error occurred.',
+      'loading.message':       'Connecting to server...',
+
 
       // ── About ────────────────────────────────────────────────
       'about.label':           'About',
@@ -143,31 +161,37 @@
       'about.code.sub':        'GitHub \u00b7 Source code',
       'about.dataset':         'Dataset',
       'about.dataset.sub':     'Download \u00b7 v1.0',
+      'about.ack.text': 
+        'Thank you to my supervisor Coloma Ballester for their help and contribution to the project, ' +
+        'to Pep Pujols Puigdesens as the owner of the SPMN station that provided the data, ' +
+        'and to the SPMN and its coordinator Josep M. Trigo-Rodríguez, as well as the Agrupació Astronòmica d’Osona, ' +
+        'for their contribution to the scientific field of astronomy.',
     },
 
     // ════════════════════════════════════════════════════════════
     ca: {
 
       // ── Nav & Footer ─────────────────────────────────────────
+      'nav.logo': 'TFG · 2026 · Enginyeria Matemàtica en Ciència de Dades',
       'nav.overview':  'Resum',
-      'nav.dataset':   'Conjunt de dades',
+      'nav.dataset':   'Dades',
       'nav.demo':      'Demo',
       'nav.about':     'Sobre',
       'footer.title':  'Aprenentatge Autosupervisat Contrastiu per a la Identificaci\u00f3 de Fen\u00f2mens Astron\u00f2mics',
       'footer.sub':    'Treball Final de Grau \u00b7 AURORA Pujols Rial \u00b7 Universitat Pompeu Fabra \u00b7 2026',
-      'footer.built':  'Constru\u00eft amb Claude.ai \u00b7 Backend desplegat amb Railway \u00b7 Allotjat a GitHub Pages',
+      'footer.built':  'Fet amb Claude.ai \u00b7 Backend desplegat amb Railway \u00b7 Allotjat a GitHub Pages',
 
       // ── Home ─────────────────────────────────────────────────
       'home.eyebrow':          'Treball Final de Grau \u00b7 Universitat Pompeu Fabra \u00b7 2026',
       'home.subtitle':         'De la Construcci\u00f3 del Conjunt de Dades a l\u2019Aprenentatge de Representaci\u00f3, Classificaci\u00f3 i Agrupament de Subclasses',
       'home.download':         'Descarregar Mem\u00f2ria',
       'home.tryDemo':          'Prova la Demo',
-      'home.scrollHint':       'Desapla\u00e7a\u2019t per explorar',
+      'home.scrollHint':       'Desapla\u00e7a\u2019t per explorar',                  
       'home.s1.label':         '01 \u00b7 Context',
       'home.s1.title':         'Meteoroides, Meteorits i Meteors',
-      'home.s1.p1':            'La meteorit\u00edca \u00e9s la ci\u00e8ncia que estudia els meteors, meteorits i meteoroides, amb l\u2019objectiu de recuperar i analitzar roques de l\u2019espai que penetren l\u2019atm\u00f2sfera terrestre \u2014 proporcionant informaci\u00f3 clau sobre l\u2019origen i evoluci\u00f3 del Sistema Solar i la hist\u00f2ria dels planetes interiors.',
-      'home.s1.p2':            'Tres termes relacionats defineixen l\u2019abast d\u2019aquest projecte: els meteoroides s\u00f3n roques a l\u2019espai que van des de grans de pols fins a petits asteroides; els meteors s\u00f3n el rastre de llum visible produit quan un meteoroide entra a l\u2019atm\u00f2sfera a alta velocitat i crema \u2014 tamb\u00e9 conegut com a bola de foc o estrella fugaç; i els meteorits s\u00f3n fragments que sobreviuen l\u2019entrada atmosf\u00e8rica i arriben al s\u00f2l.',
-      'home.s1.p3':            'Diverses organitzacions monitoritzen continu\u00efment els meteors brillants, incloent la Xarxa de Boles de Foc de la NASA, la Desert Fireball Network, FRIPON, i la Xarxa Espanyola de Boles de Foc i Recuperaci\u00f3 de Meteorits (SPMN) \u2014 una col\u00b7laboraci\u00f3 professional-amateur multidisciplin\u00e0ria amb 60 estacions a tot Espanya.',
+      'home.s1.p1':            'La meteorit\u00edca \u00e9s la ci\u00e8ncia que estudia els meteors, meteorits i meteoroides, amb l\u2019objectiu de recuperar i analitzar roques de l\u2019espai que penetren l\u2019atm\u00f2sfera terrestre \u2014 proporcionant informaci\u00f3 clau sobre l\u2019origen i evoluci\u00f3 del Sistema Solar i la hist\u00f2ria dels planetes.',
+      'home.s1.p2':            'Tres termes relacionats defineixen l\u2019abast d\u2019aquest projecte: els meteoroides s\u00f3n roques a l\u2019espai que van des de grans de pols fins a petits asteroides; els meteors s\u00f3n el rastre de llum visible produit quan un meteoroide entra a l\u2019atm\u00f2sfera a alta velocitat i crema \u2014 tamb\u00e9 conegut com a estrella fugaç; i els meteorits s\u00f3n fragments que sobreviuen l\u2019entrada atmosf\u00e8rica i arriben al s\u00f2l.',
+      'home.s1.p3':            'Diverses organitzacions monitoritzen continu\u00efment els meteors brillants, incloent la  NASA All-Sky Fireball Network, la Desert Fireball Network, FRIPON, i la Spanish Fireball and Meteorite Recovery Network (SPMN) \u2014 una col\u00b7laboraci\u00f3 professional-amateur multidisciplin\u00e0ria amb 60 estacions a tota la península.',
       'home.s1.p4':            'El material enregistrat no consisteix \u00fanicament en meteors. Avions, ocells, llums artificials i esdeveniments meteorol\u00f2gics tamb\u00e9 es detecten \u2014 sovint molt m\u00e9s freq\u00fcentment que els meteors reals. Aquest projecte se centra en la detecci\u00f3 i classificaci\u00f3 d\u2019esdeveniments de meteors a partir de dades de v\u00eddeo recollides a l\u2019estaci\u00f3 SPMN de Folgueroles, Barcelona.',
       'home.glance.label':     'El projecte en resum',
       'home.glance.domainKey': '\u00c0mbit',
@@ -184,23 +208,23 @@
       'home.s2.title':         'Un Problema de Classificaci\u00f3',
       'home.s2.titleEm':       'Sense Etiquetes',
       'home.s2.p1':            'El repte central que aborda aquest projecte \u00e9s l\u2019abs\u00e8ncia d\u2019un pipeline automatitzat per classificar esdeveniments de meteors a l\u2019estaci\u00f3 SPMN. Com que els esdeveniments de no-meteors hist\u00f2ricament es descartaven en comptes de guardar-los, no existia cap conjunt de dades etiquetades per a la classe no-meteor \u2014 fent impossible entrenar directament un classificador supervisat.',
-      'home.s2.p2':            'Fins i tot un cop recollides les mostres negatives, la classe no-meteor cont\u00e9 una barreja heterog\u00e8nia de fen\u00f2mens \u2014 avions, ocells, insectes, llums artificials, esdeveniments atmosf\u00e8rics \u2014 cap dels quals t\u00e9 etiquetes de subclasse. Aix\u00f2 d\u00f3na lloc a dos reptes acoblats:',
+      'home.s2.p2':            'Fins i tot un cop recollides les mostres negatives, la classe no-meteor cont\u00e9 una barreja heterog\u00e8nia de fen\u00f2mens \u2014 avions, ocells, insectes, llums artificials, esdeveniments atmosf\u00e8rics \u2014 cap dels quals t\u00e9 etiquetes de subclasse. Aix\u00f2 d\u00f3na lloc a dos reptes:',
       'home.pipe1.title':      'Classificaci\u00f3 Bin\u00e0ria',
       'home.pipe1.desc':       'Un classificador de meteor vs. no-meteor s\u2019ha d\u2019aprendre a partir d\u2019un conjunt de dades recentment constru\u00eft, usant un m\u00e8tode que no dep\u00e8n d\u2019etiquetes de classe durant l\u2019aprenentatge de representaci\u00f3.',
       'home.pipe2.title':      'Descoberta de Subclasses',
-      'home.pipe2.desc':       'Cal un enfocament no supervisat per explorar l\u2019estructura interna de la classe no-meteor i avaluar si subclasses distintes \u2014 avions, ocells, llamps \u2014 es poden recuperar sense anotaci\u00f3 manual.',
+      'home.pipe2.desc':       'Cal un enfocament no supervisat per explorar l\u2019estructura interna de la classe no-meteor i avaluar si subclasses diferents \u2014 avions, ocells, llamps \u2014 es poden recuperar sense anotaci\u00f3 manual.',
       'home.pipe3.title':      'Aprenentatge Autosupervisat',
-      'home.pipe3.desc':       'L\u2019SSL Contrastiu \u00e9s una opci\u00f3 natural per a tots dos reptes: apr\u00e8n representacions visuals riques a partir de dades sense etiquetar, i els embeddings es poden usar tant per a la classificaci\u00f3 com per a l\u2019agrupament.',
+      'home.pipe3.desc':       'L\u2019SSL (Self-Supervised Learning) Contrastiu \u00e9s una opci\u00f3 natural per a tots dos reptes: apr\u00e8n representacions visuals riques a partir de dades sense etiquetar, i els embeddings es poden usar tant per a la classificaci\u00f3 com per a l\u2019agrupament.',
       'home.s3.label':         '03 \u00b7 Objectius',
       'home.s3.title':         'Qu\u00e8 Pret\u00e9n Aconseguir Aquest Projecte',
       'home.obj1.title':       'Objectiu Principal',
-      'home.obj1.p1':          'Desenvolupar un pipeline de classificaci\u00f3 que distingeixi de manera fiable entre esdeveniments de meteors i no-meteors. Aprenent una representaci\u00f3 que generalitzi les caracter\u00edstiques visuals dels enregistraments de l\u2019estaci\u00f3, l\u2019objectiu \u00e9s assolir una alta precisi\u00f3 de classificaci\u00f3 bin\u00e0ria usant una sonda lineal simple sobre els embeddings apresos.',
-      'home.obj1.p2':          'Com que les dades de no-meteor normalment es descartaven abans d\u2019aquest projecte, totes les deteccions es van guardar i etiquetar en les dues classes principals durant el per\u00edode de recollida de dades \u2014 un esfor\u00e7 que en si mateix \u00e9s una contribuci\u00f3 d\u2019aquest treball.',
+      'home.obj1.p1':          'Desenvolupar un pipeline de classificaci\u00f3 que distingeixi de manera fiable entre esdeveniments de meteors i no-meteors. Aprenent una representaci\u00f3 que generalitzi les caracter\u00edstiques visuals dels enregistraments de l\u2019estaci\u00f3, l\u2019objectiu \u00e9s assolir una alta precisi\u00f3 de classificaci\u00f3 bin\u00e0ria usant un classificador lineal simple sobre els embeddings apresos.',
+      'home.obj1.p2':          'Com que les dades de no-meteor normalment es descartaven abans d\u2019aquest projecte, totes les deteccions es van guardar i etiquetar en les dues classes principals durant el per\u00edode de recollida de dades per la mateixa persona que va proporcionar les dades.',
       'home.obj2.title':       'Objectiu Secundari',
       'home.obj2.p1':          'Classificar els esdeveniments de no-meteor en categories espec\u00edfiques com avions, ocells, insectes, llamps i altres fonts de falses deteccions. Aquestes dades tenen valor cient\u00edfic en si mateixes \u2014 per exemple, enregistraments de migraci\u00f3 i patrons de vol d\u2019ocells.',
       'home.obj2.p2':          'El conjunt de dades no conté etiquetes de subclasse per als fen\u00f2mens de no-meteor, i la seva mida fa que l\u2019anotaci\u00f3 manual sigui impracticable. Aquesta tasca s\u2019aborda per tant mitjan\u00e7ant agrupament no supervisat aplicat als embeddings apresos.',
       'home.aim.label':        'Objectiu global',
-      'home.aim.text':         'Automatitzar i accelerar la classificaci\u00f3 manual que es realitza actualment a l\u2019estaci\u00f3 SPMN de Folgueroles mitjan\u00e7ant aprenentatge profund \u2014 reduint un proc\u00e9s nocturn i labori\u00f3s a un pipeline completament automatitzat.',
+      'home.aim.text':         'Automatitzar i accelerar la classificaci\u00f3 manual que es realitza actualment a l\u2019estaci\u00f3 SPMN de Folgueroles mitjan\u00e7ant aprenentatge profund \u2014 reduint un proc\u00e9s labori\u00f3s a un pipeline completament automatitzat.',
       'home.s4.label':         '04 \u00b7 Resultats Principals',
       'home.s4.title':         'Conclusions',
       'home.res.accuracy':     'Precisi\u00f3 de Classificaci\u00f3 Bin\u00e0ria',
@@ -222,7 +246,7 @@
       'data.card.meteors':     'Meteors',
       'data.card.nonMeteors':  'No-meteors',
       'data.card.subclass':    'Etiquetes de subclasse',
-      'data.card.subclassVal': '14 classes \u00b7 2.591 mostres',
+      'data.card.subclassVal': '13 classes \u00b7 2.591 mostres',
       'data.card.cameras':     'C\u00e0meres',
       'data.card.period':      'Per\u00edode de recollida',
       'data.s2.label':         '02 \u00b7 Pipeline de Processament',
@@ -234,12 +258,12 @@
       'data.step3.title':      'Retallar',
       'data.step3.desc':       'Les metadades XML proporcionen les coordenades del rectangle delimtador de la traject\u00f2ria detectada. Cada imatge suma es retalla al voltant d\u2019aquesta regi\u00f3 amb un encoixinat fix, centrant l\u2019entrada en l\u2019objecte d\u2019inter\u00e8s i descartant el fons de cel irrellevant.',
       'data.step4.title':      'Millora d\u2019histograma',
-      'data.step4.desc':       'Es apliquen quatre t\u00e8cniques de millora del contrast a les imatges retallades \u2014 estirament min-m\u00e0x, estirament percentil, llindaritzaci\u00f3 global i un estirament de meteor personalitzat usant metadades de brillantor per enregistrament \u2014 i es retenen com a augmentacions candidates per a l\u2019etapa d\u2019entrenament contrastiu.',
+      'data.step4.desc':       'S\u2019apliquen quatre t\u00e8cniques de millora del contrast a les imatges retallades \u2014 estirament min-m\u00e0x, estirament percentil, llindaritzaci\u00f3 global i un estirament de meteor personalitzat usant metadades de brillantor per enregistrament \u2014 i es retenen com a augmentacions candidates per a l\u2019etapa d\u2019entrenament contrastiu.',
       'data.step5.title':      'Etiquetatge de subclasses del conjunt de prova',
-      'data.step5.desc':       'Per avaluar l\u2019objectiu secundari d\u2019agrupament, 2.591 mostres de no-meteor van ser etiquetades manualment en 14 subclasses fines (avions, ocells, insectes, llamps, llums artificials i d\u2019altres), proporcionant una refer\u00e8ncia de veritat del s\u00f2l per a l\u2019avaluaci\u00f3 no supervisada.',
+      'data.step5.desc':       'Per avaluar l\u2019objectiu secundari d\u2019agrupament, 2.591 mostres de no-meteor van ser etiquetades manualment en 13 subclasses fines (avions, ocells, insectes, llamps, llums artificials i d\u2019altres), proporcionant una refer\u00e8ncia de veritat del s\u00f2l per a l\u2019avaluaci\u00f3 no supervisada.',
       'data.s3.label':         '03 \u00b7 Acc\u00e9s i Citaci\u00f3',
       'data.s3.title':         'Descarregar i Citar',
-      'data.s3.desc':          'El conjunt de dades est\u00e0 disponible p\u00fabicament. Si l\u2019useu a la vostra investigaci\u00f3, citar la mem\u00f2ria del projecte.',
+      'data.s3.desc':          'El conjunt de dades est\u00e0 disponible p\u00fablicament. Si l\u2019useu a la vostra investigaci\u00f3, si-us-plau citeu la mem\u00f2ria del projecte.',
       'data.downloadLabel':    'Conjunt de dades SPMN Folgueroles v1.0',
       'data.download':         'Descarregar',
       'data.bibtexLabel':      'Citaci\u00f3 BibTeX',
@@ -247,9 +271,21 @@
       // ── Demo ─────────────────────────────────────────────────
       'demo.label':            'Demo Interactiva',
       'demo.title':            'Explora els Models',
+      'demo.intro':            "Puja parells d\u2019enregistraments de meteors (.avi + .xml) o un arxiu .zip per executar el classificador. Els resultats es mostren com una graella d’imatges suma retallades, cadascuna amb la classe predita i el seu nivell de confiança.",
+      'demo.tabPredict':       'Predicció',
+      'demo.tabCluster':       'Explorador de Clústers',
+      'upload.step1':          'Aparaella cada .avi amd el seu .xml (els noms han de coincidir)',
+      'upload.step2':          'Deixa els parells aquí, o comprimeix-los i puja l\u2019arxiu .zip',
+      'upload.step3':          'Visualitza les imatges retallades amb les prediccions i descarrega els resultats',
+      'upload.primary':        'Arrossega fitxers o un .zip aquí',
+      'upload.secondary':      'o navega per pujar-los',
+      'upload.hint':           'Parells .avi + .xml · Arxiu .zip · Màx 200 MB',
       'predict.label':         'Model de Classificaci\u00f3',
       'predict.title':         'Meteor vs. No-meteor',
       'predict.desc':          'Puja un o m\u00e9s parells d\u2019enregistraments (.avi + .xml coincident), o comprimeix-los tots en un sol fitxer .zip. El servidor generar\u00e0 la imatge suma retallada per a cada parell i executar\u00e0 el classificador entrenat.',
+      'results.csv':           'CSV',
+      'results.images':        'Imatges',
+      'results.clear':         'Esborrar Tot',
       'cluster.label':         'Visualitzaci\u00f3 de Cl\u00fasters',
       'cluster.title':         'Explorador de l\u2019Espai d\u2019Embedding',
       'cluster.desc':          'Una projecci\u00f3 t-SNE de l\u2019espai d\u2019embedding apr\u00e8s per l\u2019encoder sobre el conjunt de prova de no-meteors, acolorit per etiqueta de subclasse real o per cl\u00faster K-Means.',
@@ -260,6 +296,11 @@
       'cluster.legend':        'Llegenda',
       'cluster.plotTitle':     'Gr\u00e0fic de cl\u00fasters t-SNE',
       'cluster.notice':        'Les dades d\u2019embedding encara no s\u2019han carregat. Executa generate_cluster_data.py i col\u00b7loca les sortides a assets/data/embeddings2d.json i assets/data/embeddings3d.json.',
+      'storage.warning':       'S\u2019està arribant al límit d\u2019emmagatzematge.',
+      'storage.downloadClear': 'Descarregar i Netejar',
+      'error.generic':         'S\u2019ha produït un error.',
+      'loading.message':       'Connectant amb el servidor...',
+
 
       // ── About ────────────────────────────────────────────────
       'about.label':           'Sobre',
@@ -275,6 +316,11 @@
       'about.code.sub':        'GitHub \u00b7 Codi font',
       'about.dataset':         'Conjunt de dades',
       'about.dataset.sub':     'Descarregar \u00b7 v1.0',
+      'about.ack.text': 
+        'Agraeixo a la meva supervisora Coloma Ballester per la seva ajuda i contribució al projecte, ' +
+        'a Pep Pujols Puigdesens com a propietari de l\u2019estació SPMN que va proporcionar les dades, ' +
+        'i a la SPMN i al seu coordinador Josep M. Trigo-Rodríguez, així com a l\u2019Agrupació Astronòmica d\u2019Osona, ' +
+        'per la seva contribució al camp científic de l\u2019astronomia.',
     },
   };
 
