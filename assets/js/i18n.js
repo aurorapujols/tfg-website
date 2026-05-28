@@ -161,11 +161,10 @@
       'about.code.sub':        'GitHub \u00b7 Source code',
       'about.dataset':         'Dataset',
       'about.dataset.sub':     'Download \u00b7 v1.0',
-      'about.ack.text': 
-        'Thank you to my supervisor Coloma Ballester for their help and contribution to the project, ' +
-        'to Pep Pujols Puigdesens as the owner of the SPMN station that provided the data, ' +
-        'and to the SPMN and its coordinator Josep M. Trigo-Rodríguez, as well as the Agrupació Astronòmica d’Osona, ' +
-        'for their contribution to the scientific field of astronomy.',
+      'about.ack.p1': 'Thank you to my supervisor Coloma Ballester for their help and contribution to the project, ',
+      'about.ack.p2': 'to Pep Pujols Puigdesens as the owner of the SPMN station that provided the data, and to the ',
+      'about.ack.p3': ' and its coordinator Prof. Josep M. Trigo-Rodríguez, as well as the Agrupació Astronòmica d’Osona, for their contribution to the scientific field of astronomy.',
+
     },
 
     // ════════════════════════════════════════════════════════════
@@ -316,11 +315,10 @@
       'about.code.sub':        'GitHub \u00b7 Codi font',
       'about.dataset':         'Conjunt de dades',
       'about.dataset.sub':     'Descarregar \u00b7 v1.0',
-      'about.ack.text': 
-        'Agraeixo a la meva supervisora Coloma Ballester per la seva ajuda i contribució al projecte, ' +
-        'a Pep Pujols Puigdesens com a propietari de l\u2019estació SPMN que va proporcionar les dades, ' +
-        'i a la SPMN i al seu coordinador Josep M. Trigo-Rodríguez, així com a l\u2019Agrupació Astronòmica d\u2019Osona, ' +
-        'per la seva contribució al camp científic de l\u2019astronomia.',
+      'about.ack.p1': 'Agraeixo a la meva supervisora Coloma Ballester per la seva ajuda i contribució al projecte, ',
+      'about.ack.p2': 'a Pep Pujols Puigdesens com a propietari de l’estació SPMN que va proporcionar les dades, i a la ',
+      'about.ack.p3': ' i al seu coordinador Prof. Josep M. Trigo-Rodríguez, així com a l’Agrupació Astronòmica d’Osona, per la seva contribució al camp científic de l’astronomia.',
+      
     },
   };
 
